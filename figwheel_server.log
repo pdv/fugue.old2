@@ -559,3 +559,180 @@ notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
 Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
 [32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.361 seconds.[0m
 notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.45 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.363 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.354 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.404 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.345 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/core.cljs   line:9  column:14  ----[0m
+
+  [1mWrong number of args (2) passed to fugue2.audio/lfo[0m
+
+  [36m 6[0m  [36m(defn start-synth! [][0m
+  [36m 7[0m  [36m  (-> (a/saw 220)[0m
+  [36m 8[0m  [36m      (a/gain 0.3)[0m
+  [33m 9[0m  [1m      (a/lpf (a/lfo (a/lfo 0.5 0.2 4) 200))[0m
+  [0m  [0m  [33m             ^--- Wrong number of args (2) passed to fugue2.audio/lfo[0m
+  [36m10[0m  [36m      (a/out)))[0m
+  [36m11[0m  [36m[0m
+  [36m12[0m  [36m(defn start [][0m
+  [36m13[0m  [36m  (a/init-audio!)[0m
+  [36m14[0m  [36m  (start-synth!)[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/core.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.362 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.409 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/audio.cljs   line:27  column:4  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/mix[0m
+
+  [36m24[0m  [36m(defn mix[0m
+  [36m25[0m  [36m  "Combines the inputs into one signal"[0m
+  [36m26[0m  [36m  [& args][0m
+  [33m27[0m  [1m  (engine/mix @ctx args))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var fugue2.engine/mix[0m
+  [36m28[0m  [36m[0m
+  [36m29[0m  [36m;;; Oscillators[0m
+  [36m30[0m  [36m[0m
+  [36m31[0m  [36m(defn sin-osc[0m
+  [36m32[0m  [36m  "Starts a sine wave oscillator at the given frequency"[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/audio.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.442 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.42 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.453 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/core.cljs   line:8  column:16  ----[0m
+
+  [1mUse of undeclared Var fugue2.core/&saws[0m
+
+  [36m 4[0m  [36m(.log js/console "Hello ")[0m
+  [36m 5[0m  [36m[0m
+  [36m 6[0m  [36m(defn start-synth! [][0m
+  [36m 7[0m  [36m  (let [saws (map #(a/saw 220 (a/lfo 0 0.2 %)) (range 10))][0m
+  [33m 8[0m  [1m    (-> (a/mix &saws)[0m
+  [0m  [0m  [33m               ^--- Use of undeclared Var fugue2.core/&saws[0m
+  [36m 9[0m  [36m        (a/gain 0.05)[0m
+  [36m10[0m  [36m        (a/out))))[0m
+  [36m11[0m  [36m[0m
+  [36m12[0m  [36m(defn start [][0m
+  [36m13[0m  [36m  (a/init-audio!)[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/core.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.432 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.375 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.467 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.345 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/core.cljs   line:7  column:15  ----[0m
+
+  [1mUse of undeclared Var fugue2.core/saw[0m
+
+  [36m 4[0m  [36m(.log js/console "Hello ")[0m
+  [36m 5[0m  [36m[0m
+  [36m 6[0m  [36m(defn start-synth! [][0m
+  [33m 7[0m  [1m  (-> (a/mix (saw 220)[0m
+  [0m  [0m  [33m              ^--- Use of undeclared Var fugue2.core/saw[0m
+  [36m 8[0m  [36m             (saw 440)[0m
+  [36m 9[0m  [36m             (saw 880))[0m
+  [36m10[0m  [36m      (a/gain 0.2)[0m
+  [36m11[0m  [36m      (a/out)))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/core.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/core.cljs   line:8  column:15  ----[0m
+
+  [1mUse of undeclared Var fugue2.core/saw[0m
+
+  [36m 4[0m  [36m(.log js/console "Hello ")[0m
+  [36m 5[0m  [36m[0m
+  [36m 6[0m  [36m(defn start-synth! [][0m
+  [36m 7[0m  [36m  (-> (a/mix (saw 220)[0m
+  [33m 8[0m  [1m             (saw 440)[0m
+  [0m  [0m  [33m              ^--- Use of undeclared Var fugue2.core/saw[0m
+  [36m 9[0m  [36m             (saw 880))[0m
+  [36m10[0m  [36m      (a/gain 0.2)[0m
+  [36m11[0m  [36m      (a/out)))[0m
+  [36m12[0m  [36m[0m
+  [36m13[0m  [36m(defn start [][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/core.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/core.cljs   line:9  column:15  ----[0m
+
+  [1mUse of undeclared Var fugue2.core/saw[0m
+
+  [36m 6[0m  [36m(defn start-synth! [][0m
+  [36m 7[0m  [36m  (-> (a/mix (saw 220)[0m
+  [36m 8[0m  [36m             (saw 440)[0m
+  [33m 9[0m  [1m             (saw 880))[0m
+  [0m  [0m  [33m              ^--- Use of undeclared Var fugue2.core/saw[0m
+  [36m10[0m  [36m      (a/gain 0.2)[0m
+  [36m11[0m  [36m      (a/out)))[0m
+  [36m12[0m  [36m[0m
+  [36m13[0m  [36m(defn start [][0m
+  [36m14[0m  [36m  (a/init-audio!)[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/core.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.402 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.353 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.203 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:23 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 23, col 1] Unexpected EOF while reading item 8 of list, starting at line 6 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/core.cljs   line:7  column:26  ----[0m
+
+  [1mUse of undeclared Var fugue2.core/lfo[0m
+
+  [36m 4[0m  [36m(.log js/console "Hello ")[0m
+  [36m 5[0m  [36m[0m
+  [36m 6[0m  [36m(defn start-synth! [][0m
+  [33m 7[0m  [1m  (-> (a/mix (a/saw 220 (lfo 0 0.5 30))[0m
+  [0m  [0m  [33m                         ^--- Use of undeclared Var fugue2.core/lfo[0m
+  [36m 8[0m  [36m             (a/saw 440))[0m
+  [36m 9[0m  [36m      (a/gain 0.2)[0m
+  [36m10[0m  [36m      (a/out)))[0m
+  [36m11[0m  [36m[0m
+  [36m12[0m  [36m(defn start [][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/core.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.357 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.378 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.338 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js

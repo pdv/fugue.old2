@@ -3,12 +3,15 @@
 
 (.log js/console "Hello ")
 
+(defn start-synth! []
+  (-> (a/mix (a/saw 110 (a/lfo 0 0.5 30))
+             (a/saw 220))
+      (a/gain 0.2)
+      (a/out)))
+
 (defn start []
   (a/init-audio!)
-  (-> (a/sin-osc 440)
-      (a/gain 0.3)
-      (a/gain (a/lfo 1 2 0.3))
-      (a/out))
+  (start-synth!)
   (.log js/console "Started"))
 
 (defn stop []

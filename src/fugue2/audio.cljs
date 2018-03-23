@@ -21,6 +21,11 @@
   [in amp]
   (engine/gain @ctx in amp))
 
+(defn mix
+  "Combines the inputs into one signal"
+  [& args]
+  (engine/mix @ctx args))
+
 ;;; Oscillators
 
 (defn sin-osc
@@ -46,6 +51,26 @@
   ([freq] (tri freq 0))
   ([freq detune]
    (engine/oscillator @ctx :triangle freq detune)))
+
+;;; Filters
+
+(defn lpf
+  "Applies a low-pass filter to the input"
+  ([in freq] (lpf in freq 1))
+  ([in freq q]
+   (engine/biquad-filter @ctx in :lowpass freq q)))
+
+(defn hpf
+  "Applies a high-pass filter to the input"
+  ([in freq] (lpf in freq 1))
+  ([in freq q]
+   (engine/biquad-filter @ctx in :highpass freq q)))
+
+(defn bpf
+  "Applies a band-pass filter to the input"
+  ([in freq] (lpf in freq 1))
+  ([in freq q]
+   (engine/biquad-filter @ctx in :bandpass freq q)))
 
 ;;; Modulators
 

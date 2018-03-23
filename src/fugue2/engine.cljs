@@ -29,6 +29,13 @@
     (node? modulator) (.connect modulator param)
     :else (throw (js/Error. "Invalid modulator type"))))
 
+(defn mix
+  [ctx ins]
+  (let [mixed (.createGain ctx)]
+    (doseq [in ins]
+      (.connect in mixed))
+    mixed))
+
 ;;; Nodes
 
 (defn oscillator
