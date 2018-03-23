@@ -6,10 +6,10 @@
                  [org.clojure/clojurescript "1.9.946"]]
   :plugins [[lein-figwheel "0.5.15"]]
   :cljsbuild {
-    :builds [{:id "example" 
+    :builds [{:id "fugue2" 
               :source-paths ["src/"]
               :figwheel true
-              :compiler {:main "example.core"
+              :compiler {:main "fugue2.core"
                          :asset-path "js/out"
                          :output-to "resources/public/js/fugue.js"
                          :output-dir "resources/public/js/out"}}]})

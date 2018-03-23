@@ -1,0 +1,501 @@
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.421 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.378 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.448 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.344 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.472 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.468 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/goog/deps.js
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.415 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.378 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.453 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:31  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m27[0m  [36m(defn oscillator[0m
+  [36m28[0m  [36m  [ctx type freq detune][0m
+  [36m29[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m30[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [33m31[0m  [1m    (attach freq ctx (.-frequency osc-node))[0m
+  [0m  [0m  [33m     ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m32[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+  [36m33[0m  [36m    (.start osc-node)[0m
+  [36m34[0m  [36m    osc-node))[0m
+  [36m35[0m  [36m[0m
+  [36m36[0m  [36m(defn oscillator[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:32  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m28[0m  [36m  [ctx type freq detune][0m
+  [36m29[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m30[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [36m31[0m  [36m    (attach freq ctx (.-frequency osc-node))[0m
+  [33m32[0m  [1m    (attach detune ctx (.-detune osc-node))[0m
+  [0m  [0m  [33m     ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m33[0m  [36m    (.start osc-node)[0m
+  [36m34[0m  [36m    osc-node))[0m
+  [36m35[0m  [36m[0m
+  [36m36[0m  [36m(defn oscillator[0m
+  [36m37[0m  [36m  [ctx type freq detune][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:36  column:1  ----[0m
+
+  [1moscillator at line 27 is being replaced[0m
+
+  [36m32[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+  [36m33[0m  [36m    (.start osc-node)[0m
+  [36m34[0m  [36m    osc-node))[0m
+  [36m35[0m  [36m[0m
+  [33m36[0m  [1m(defn oscillator[0m
+  [0m  [0m  [33m^--- oscillator at line 27 is being replaced[0m
+  [36m37[0m  [36m  [ctx type freq detune][0m
+  [36m38[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m39[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [36m40[0m  [36m    (attach freq ctx (.-frequency osc-node))[0m
+  [36m41[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:40  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m36[0m  [36m(defn oscillator[0m
+  [36m37[0m  [36m  [ctx type freq detune][0m
+  [36m38[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m39[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [33m40[0m  [1m    (attach freq ctx (.-frequency osc-node))[0m
+  [0m  [0m  [33m     ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m41[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+  [36m42[0m  [36m    (.start osc-node)[0m
+  [36m43[0m  [36m    osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:41  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m37[0m  [36m[ctx type freq detune][0m
+  [36m38[0m  [36m(let [osc-node (.createOscillator ctx)][0m
+  [36m39[0m  [36m  (set! (.-type osc-node) (clj->js type))[0m
+  [36m40[0m  [36m  (attach freq ctx (.-frequency osc-node))[0m
+  [33m41[0m  [1m  (attach detune ctx (.-detune osc-node))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m42[0m  [36m  (.start osc-node)[0m
+  [36m43[0m  [36m  osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.572 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:28  column:47  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/n[0m
+
+  [36m24[0m  [36m(def node? (partial instance? js/AudioNode))[0m
+  [36m25[0m  [36m[0m
+  [36m26[0m  [36m(defn attach-param! [modulator param][0m
+  [36m27[0m  [36m  (cond[0m
+  [33m28[0m  [1m    (number? modulator) (set! (.-value param) n)[0m
+  [0m  [0m  [33m                                              ^--- Use of undeclared Var fugue2.engine/n[0m
+  [36m29[0m  [36m    (node? modulator) (.connect m param)[0m
+  [36m30[0m  [36m    :else (throw (js/Error. "Invalid modulator"))))[0m
+  [36m31[0m  [36m[0m
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:29  column:33  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/m[0m
+
+  [36m26[0m  [36m(defn attach-param! [modulator param][0m
+  [36m27[0m  [36m  (cond[0m
+  [36m28[0m  [36m    (number? modulator) (set! (.-value param) n)[0m
+  [33m29[0m  [1m    (node? modulator) (.connect m param)[0m
+  [0m  [0m  [33m                                ^--- Use of undeclared Var fugue2.engine/m[0m
+  [36m30[0m  [36m    :else (throw (js/Error. "Invalid modulator"))))[0m
+  [36m31[0m  [36m[0m
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+  [36m34[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:36  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+  [36m34[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [33m36[0m  [1m    (attach freq ctx (.-frequency osc-node))[0m
+  [0m  [0m  [33m     ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m37[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+  [36m38[0m  [36m    (.start osc-node)[0m
+  [36m39[0m  [36m    osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:37  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m33[0m  [36m[ctx type freq detune][0m
+  [36m34[0m  [36m(let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m  (set! (.-type osc-node) (clj->js type))[0m
+  [36m36[0m  [36m  (attach freq ctx (.-frequency osc-node))[0m
+  [33m37[0m  [1m  (attach detune ctx (.-detune osc-node))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m38[0m  [36m  (.start osc-node)[0m
+  [36m39[0m  [36m  osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.659 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:28  column:47  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/n[0m
+
+  [36m24[0m  [36m(def node? (partial instance? js/AudioNode))[0m
+  [36m25[0m  [36m[0m
+  [36m26[0m  [36m(defn attach-param! [modulator param][0m
+  [36m27[0m  [36m  (cond[0m
+  [33m28[0m  [1m    (number? modulator) (set! (.-value param) n)[0m
+  [0m  [0m  [33m                                              ^--- Use of undeclared Var fugue2.engine/n[0m
+  [36m29[0m  [36m    (node? modulator) (.connect modulator param)[0m
+  [36m30[0m  [36m    :else (throw (js/Error. "Invalid modulator"))))[0m
+  [36m31[0m  [36m[0m
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:36  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+  [36m34[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [33m36[0m  [1m    (attach freq ctx (.-frequency osc-node))[0m
+  [0m  [0m  [33m     ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m37[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+  [36m38[0m  [36m    (.start osc-node)[0m
+  [36m39[0m  [36m    osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:37  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m33[0m  [36m[ctx type freq detune][0m
+  [36m34[0m  [36m(let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m  (set! (.-type osc-node) (clj->js type))[0m
+  [36m36[0m  [36m  (attach freq ctx (.-frequency osc-node))[0m
+  [33m37[0m  [1m  (attach detune ctx (.-detune osc-node))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m38[0m  [36m  (.start osc-node)[0m
+  [36m39[0m  [36m  osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.413 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:28  column:47  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/n[0m
+
+  [36m24[0m  [36m(def node? (partial instance? js/AudioNode))[0m
+  [36m25[0m  [36m[0m
+  [36m26[0m  [36m(defn attach-param! [modulator param][0m
+  [36m27[0m  [36m  (cond[0m
+  [33m28[0m  [1m    (number? modulator) (set! (.-value param) n)[0m
+  [0m  [0m  [33m                                              ^--- Use of undeclared Var fugue2.engine/n[0m
+  [36m29[0m  [36m    (node? modulator) (.connect modulator param)[0m
+  [36m30[0m  [36m    :else (throw (js/Error. "Invalid modulator type"))))[0m
+  [36m31[0m  [36m[0m
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:36  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+  [36m34[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [33m36[0m  [1m    (attach freq ctx (.-frequency osc-node))[0m
+  [0m  [0m  [33m     ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m37[0m  [36m    (attach detune ctx (.-detune osc-node))[0m
+  [36m38[0m  [36m    (.start osc-node)[0m
+  [36m39[0m  [36m    osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:37  column:6  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/attach[0m
+
+  [36m33[0m  [36m[ctx type freq detune][0m
+  [36m34[0m  [36m(let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m  (set! (.-type osc-node) (clj->js type))[0m
+  [36m36[0m  [36m  (attach freq ctx (.-frequency osc-node))[0m
+  [33m37[0m  [1m  (attach detune ctx (.-detune osc-node))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var fugue2.engine/attach[0m
+  [36m38[0m  [36m  (.start osc-node)[0m
+  [36m39[0m  [36m  osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.404 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:28  column:47  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/n[0m
+
+  [36m24[0m  [36m(def node? (partial instance? js/AudioNode))[0m
+  [36m25[0m  [36m[0m
+  [36m26[0m  [36m(defn attach-param! [modulator param][0m
+  [36m27[0m  [36m  (cond[0m
+  [33m28[0m  [1m    (number? modulator) (set! (.-value param) n)[0m
+  [0m  [0m  [33m                                              ^--- Use of undeclared Var fugue2.engine/n[0m
+  [36m29[0m  [36m    (node? modulator) (.connect modulator param)[0m
+  [36m30[0m  [36m    :else (throw (js/Error. "Invalid modulator type"))))[0m
+  [36m31[0m  [36m[0m
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:36  column:5  ----[0m
+
+  [1mWrong number of args (3) passed to fugue2.engine/attach-param![0m
+
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+  [36m34[0m  [36m  (let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m    (set! (.-type osc-node) (clj->js type))[0m
+  [33m36[0m  [1m    (attach-param! freq ctx (.-frequency osc-node))[0m
+  [0m  [0m  [33m    ^--- Wrong number of args (3) passed to fugue2.engine/attach-param![0m
+  [36m37[0m  [36m    (attach-param! detune ctx (.-detune osc-node))[0m
+  [36m38[0m  [36m    (.start osc-node)[0m
+  [36m39[0m  [36m    osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:37  column:5  ----[0m
+
+  [1mWrong number of args (3) passed to fugue2.engine/attach-param![0m
+
+  [36m33[0m  [36m[ctx type freq detune][0m
+  [36m34[0m  [36m(let [osc-node (.createOscillator ctx)][0m
+  [36m35[0m  [36m  (set! (.-type osc-node) (clj->js type))[0m
+  [36m36[0m  [36m  (attach-param! freq ctx (.-frequency osc-node))[0m
+  [33m37[0m  [1m  (attach-param! detune ctx (.-detune osc-node))[0m
+  [0m  [0m  [33m  ^--- Wrong number of args (3) passed to fugue2.engine/attach-param![0m
+  [36m38[0m  [36m  (.start osc-node)[0m
+  [36m39[0m  [36m  osc-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.384 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:28  column:47  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/n[0m
+
+  [36m24[0m  [36m(def node? (partial instance? js/AudioNode))[0m
+  [36m25[0m  [36m[0m
+  [36m26[0m  [36m(defn attach-param! [modulator param][0m
+  [36m27[0m  [36m  (cond[0m
+  [33m28[0m  [1m    (number? modulator) (set! (.-value param) n)[0m
+  [0m  [0m  [33m                                              ^--- Use of undeclared Var fugue2.engine/n[0m
+  [36m29[0m  [36m    (node? modulator) (.connect modulator param)[0m
+  [36m30[0m  [36m    :else (throw (js/Error. "Invalid modulator type"))))[0m
+  [36m31[0m  [36m[0m
+  [36m32[0m  [36m(defn oscillator[0m
+  [36m33[0m  [36m  [ctx type freq detune][0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.375 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.367 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.408 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.362 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.402 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.237 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:12 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 12, col 1] Unexpected EOF while reading item 5 of list, starting at line 8 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.389 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.384 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/audio.cljs   line:13  column:4  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/gain[0m
+
+  [36m10[0m  [36m(defn gain[0m
+  [36m11[0m  [36m  "Multiplies the amplitude of in by amp"[0m
+  [36m12[0m  [36m  [in amp][0m
+  [33m13[0m  [1m  (engine/gain @ctx in amp))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var fugue2.engine/gain[0m
+  [36m14[0m  [36m[0m
+  [36m15[0m  [36m;;; Oscillators[0m
+  [36m16[0m  [36m[0m
+  [36m17[0m  [36m(defn sin-osc[0m
+  [36m18[0m  [36m  "Starts a sine wave oscillator at the given frequency"[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/audio.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.355 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:55  column:4  ----[0m
+
+  [1mNo such namespace: engine, could not locate engine.cljs, engine.cljc, or JavaScript source providing "engine"[0m
+
+  [36m52[0m  [36m(defn gain[0m
+  [36m53[0m  [36m  "Multiplies the amplitude of in by amp"[0m
+  [36m54[0m  [36m  [in amp][0m
+  [33m55[0m  [1m  (engine/gain @ctx in amp))[0m
+  [0m  [0m  [33m   ^--- No such namespace: engine, could not locate engine.cljs, engine.cljc, or JavaScript source providing "engine"[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:55  column:4  ----[0m
+
+  [1mUse of undeclared Var engine/gain[0m
+
+  [36m52[0m  [36m(defn gain[0m
+  [36m53[0m  [36m  "Multiplies the amplitude of in by amp"[0m
+  [36m54[0m  [36m  [in amp][0m
+  [33m55[0m  [1m  (engine/gain @ctx in amp))[0m
+  [0m  [0m  [33m   ^--- Use of undeclared Var engine/gain[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:55  column:17  ----[0m
+
+  [1mUse of undeclared Var fugue2.engine/ctx[0m
+
+  [36m52[0m  [36m(defn gain[0m
+  [36m53[0m  [36m  "Multiplies the amplitude of in by amp"[0m
+  [36m54[0m  [36m  [in amp][0m
+  [33m55[0m  [1m  (engine/gain @ctx in amp))[0m
+  [0m  [0m  [33m                ^--- Use of undeclared Var fugue2.engine/ctx[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/audio.cljs   line:13  column:3  ----[0m
+
+  [1mWrong number of args (3) passed to fugue2.engine/gain[0m
+
+  [36m10[0m  [36m(defn gain[0m
+  [36m11[0m  [36m  "Multiplies the amplitude of in by amp"[0m
+  [36m12[0m  [36m  [in amp][0m
+  [33m13[0m  [1m  (engine/gain @ctx in amp))[0m
+  [0m  [0m  [33m  ^--- Wrong number of args (3) passed to fugue2.engine/gain[0m
+  [36m14[0m  [36m[0m
+  [36m15[0m  [36m;;; Oscillators[0m
+  [36m16[0m  [36m[0m
+  [36m17[0m  [36m(defn sin-osc[0m
+  [36m18[0m  [36m  "Starts a sine wave oscillator at the given frequency"[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/audio.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.446 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.441 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.39 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.202 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:13 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 13, col 1] Unexpected EOF while reading item 6 of list, starting at line 8 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.216 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:13 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 13, col 1] Unexpected EOF while reading item 6 of list, starting at line 8 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.196 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:13 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 13, col 1] Unexpected EOF while reading item 6 of list, starting at line 8 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.393 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.161 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:19 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 19, col 1] Unexpected EOF while reading item 8 of list, starting at line 1 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.165 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:19 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 19, col 1] Unexpected EOF while reading item 8 of list, starting at line 1 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[31mFailed to compile build :fugue2 from ["src/"] in 0.156 seconds.[0m
+[36m----  Could not Read  src/fugue2/core.cljs   line:19 ----[0m
+
+  [1m/Users/pdv/fugue2/src/fugue2/core.cljs [line 19, col 1] Unexpected EOF while reading item 8 of list, starting at line 1 and column 1.[0m
+
+[36m----  Reader Error : Please see src/fugue2/core.cljs  ----[0m
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.381 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/cljs_deps.js
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
