@@ -55,3 +55,10 @@
     (attach-param! amount (.-gain gain-node))
     (.connect in gain-node)
     gain-node))
+
+(defn constant
+  [ctx & modulators]
+  (let [constant-node (.createConstantSource ctx)]
+    (run! #(attach-param! % (.-offset constant-node)) modulators)
+    (.start constant-node)
+    constant-node))

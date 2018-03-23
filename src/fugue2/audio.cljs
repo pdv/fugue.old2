@@ -46,3 +46,11 @@
   ([freq] (tri freq 0))
   ([freq detune]
    (engine/oscillator @ctx :triangle freq detune)))
+
+;;; Modulators
+
+(defn lfo
+  [value freq amount]
+  (let [osc-node (sin-osc freq)
+        modulator (gain osc-node amount)]
+    (engine/constant @ctx value modulator)))

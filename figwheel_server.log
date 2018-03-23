@@ -499,3 +499,63 @@ Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
 [32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.381 seconds.[0m
 notifying browser that file changed:  resources/public/js/out/cljs_deps.js
 notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:62  column:5  ----[0m
+
+  [1mWrong number of args (1) passed to cljs.core/apply[0m
+
+  [36m59[0m  [36m(defn constant[0m
+  [36m60[0m  [36m  [ctx & modulators][0m
+  [36m61[0m  [36m  (let [constant-node (.createConstantSource ctx)][0m
+  [33m62[0m  [1m    (apply #(attach-param! % (.-offset constant-node)))[0m
+  [0m  [0m  [33m    ^--- Wrong number of args (1) passed to cljs.core/apply[0m
+  [36m63[0m  [36m    (.start constant-node)[0m
+  [36m64[0m  [36m    constant-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.419 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:62  column:5  ----[0m
+
+  [1mWrong number of args (1) passed to cljs.core/apply[0m
+
+  [36m59[0m  [36m(defn constant[0m
+  [36m60[0m  [36m  [ctx & modulators][0m
+  [36m61[0m  [36m  (let [constant-node (.createConstantSource ctx)][0m
+  [33m62[0m  [1m    (apply #(attach-param! % (.-offset constant-node) modulators))[0m
+  [0m  [0m  [33m    ^--- Wrong number of args (1) passed to cljs.core/apply[0m
+  [36m63[0m  [36m    (.start constant-node)[0m
+  [36m64[0m  [36m    constant-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[36m----  Compiler Warning on   src/fugue2/engine.cljs   line:62  column:13  ----[0m
+
+  [1mWrong number of args (3) passed to fugue2.engine/attach-param![0m
+
+  [36m59[0m  [36m(defn constant[0m
+  [36m60[0m  [36m  [ctx & modulators][0m
+  [36m61[0m  [36m  (let [constant-node (.createConstantSource ctx)][0m
+  [33m62[0m  [1m    (apply #(attach-param! % (.-offset constant-node) modulators))[0m
+  [0m  [0m  [33m            ^--- Wrong number of args (3) passed to fugue2.engine/attach-param![0m
+  [36m63[0m  [36m    (.start constant-node)[0m
+  [36m64[0m  [36m    constant-node))[0m
+
+[36m----  Compiler Warning : Please see src/fugue2/engine.cljs  ----[0m
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.458 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.433 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.416 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/audio.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.383 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.427 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/engine.js
+Compiling build :fugue2 to "resources/public/js/fugue.js" from ["src/"]...
+[32mSuccessfully compiled build :fugue2 to "resources/public/js/fugue.js" in 0.361 seconds.[0m
+notifying browser that file changed:  resources/public/js/out/fugue2/core.js

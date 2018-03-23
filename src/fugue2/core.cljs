@@ -7,6 +7,7 @@
   (a/init-audio!)
   (-> (a/sin-osc 440)
       (a/gain 0.3)
+      (a/gain (a/lfo 1 2 0.3))
       (a/out))
   (.log js/console "Started"))
 
