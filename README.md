@@ -1,14 +1,17 @@
 # fugue2
 
-A Clojure library designed to ... well, that part is up to you.
+A rework/rewrite of [fugue](github.com/pdv/fugue) using the experimental ConstantSourceNode, which is currently only available in Firefox.
 
 ## Usage
 
-FIXME
+To start the fighweel server:
+```
+lein figwheel
+```
 
 ## License
 
-Copyright © 2018 FIXME
+Copyright © 2018 pdv
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
