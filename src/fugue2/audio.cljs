@@ -61,8 +61,10 @@
 (defn load-sample [url]
   (engine/load-sample @ctx url #(swap! buffers assoc url %)))
 
-(defn sample [url]
-  (engine/buffer-node @ctx (@buffers url)))
+(defn sample
+  ([url] (sample url 0))
+  ([url time]
+   (engine/buffer-node @ctx (@buffers url) time)))
 
 ;;; Filters
 

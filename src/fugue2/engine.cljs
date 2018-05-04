@@ -119,8 +119,8 @@
 
 ;; todo: would be cool if this was triggered with a gate
 (defn buffer-node
-  [ctx buffer]
+  [ctx buffer time]
   (let [node (.createBufferSource ctx)]
     (set! (.-buffer node) buffer)
-    (.start node)
+    (.start node time)
     node))
