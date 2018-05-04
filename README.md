@@ -1,6 +1,6 @@
 # fugue2
 
-A rework/rewrite of [fugue](github.com/pdv/fugue) using the experimental ConstantSourceNode, which is currently only available in Firefox.
+A rework/rewrite of [fugue](https://github.com/pdv/fugue) using the experimental ConstantSourceNode, which is currently only available in Firefox.
 
 ## Usage
 
