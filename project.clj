@@ -13,3 +13,4 @@
                          :asset-path "js/out"
                          :output-to "resources/public/js/fugue.js"
                          :output-dir "resources/public/js/out"}}]})
+

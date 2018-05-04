@@ -32,3 +32,4 @@ goog.addDependency("../figwheel/connect.js", ['figwheel.connect'], ['cljs.core',
 goog.addDependency("../fugue2/engine.js", ['fugue2.engine'], ['cljs.core']);
 goog.addDependency("../fugue2/audio.js", ['fugue2.audio'], ['fugue2.engine', 'cljs.core']);
 goog.addDependency("../fugue2/core.js", ['fugue2.core'], ['cljs.core', 'fugue2.audio']);
+goog.addDependency("../fugue2/midi.js", ['fugue2.midi'], ['cljs.core']);
