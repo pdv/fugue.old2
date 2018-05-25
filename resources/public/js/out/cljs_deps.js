@@ -29,7 +29,8 @@ goog.addDependency("../cljs/spec/alpha.js", ['cljs.spec.alpha'], ['cljs.core', '
 goog.addDependency("../cljs/repl.js", ['cljs.repl'], ['cljs.core', 'cljs.spec.alpha']);
 goog.addDependency("../figwheel/client.js", ['figwheel.client'], ['goog.userAgent.product', 'goog.Uri', 'cljs.core', 'goog.object', 'cljs.core.async', 'figwheel.client.file_reloading', 'figwheel.client.utils', 'cljs.repl', 'figwheel.client.heads_up', 'figwheel.client.socket', 'clojure.string', 'cljs.reader']);
 goog.addDependency("../figwheel/connect.js", ['figwheel.connect'], ['cljs.core', 'figwheel.client']);
+goog.addDependency("../fugue2/async.js", ['fugue2.async'], ['cljs.core', 'cljs.core.async']);
 goog.addDependency("../fugue2/engine.js", ['fugue2.engine'], ['cljs.core']);
 goog.addDependency("../fugue2/audio.js", ['fugue2.audio'], ['fugue2.engine', 'cljs.core']);
-goog.addDependency("../fugue2/core.js", ['fugue2.core'], ['cljs.core', 'fugue2.audio']);
+goog.addDependency("../fugue2/core.js", ['fugue2.core'], ['fugue2.async', 'cljs.core', 'cljs.core.async', 'fugue2.audio']);
 goog.addDependency("../fugue2/midi.js", ['fugue2.midi'], ['cljs.core']);

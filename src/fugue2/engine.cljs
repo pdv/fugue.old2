@@ -23,7 +23,7 @@
 
 (def node? (partial instance? js/AudioNode))
 
-(defn attach-param! [modulator param]
+(defn- attach-param! [modulator param]
   (cond
     (number? modulator) (set! (.-value param) modulator)
     (node? modulator) (.connect modulator param)
@@ -42,6 +42,7 @@
   [ctx type freq detune]
   (let [osc-node (.createOscillator ctx)]
     (set! (.-type osc-node) (clj->js type))
+    (set! (.-value (.-frequency osc-node)) 0)
     (attach-param! freq (.-frequency osc-node))
     (attach-param! detune (.-detune osc-node))
     (.start osc-node)

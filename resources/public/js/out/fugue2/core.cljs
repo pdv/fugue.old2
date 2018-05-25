@@ -1,5 +1,8 @@
 (ns fugue2.core
-  (:require [fugue2.audio :as a]))
+  (:require-macros [cljs.core.async :refer [go]])
+  (:require [cljs.core.async :as async :refer [<!]]
+            [fugue2.async :as async-midi]
+            [fugue2.audio :as a]))
 
 (defn detuned-synth! []
   (-> (a/mix (a/saw 110 (a/lfo 0 0.5 30))
@@ -56,6 +59,22 @@
               (a/gain 0.5)
               (a/out)))))))
 
+(def sample-map
+  {44 "audio/808_snare.wav"
+   45 "audio/808_kick.wav"})
+
+(defn sampler []
+  (-> midi/kb
+      sample-map
+      audio/sample
+      a/out))
+
+(def sequencer
+  [{:sample "audio/808_clap.wav"
+    :seq [0 0 0 0 1 0 0 0]}
+   {:sample "audio/808_kick_short.wav"
+    :seq [1 0 0 1 0 0 0 0]}])
+
 (def pattern
   [{:sample "audio/808_kick_short.wav"
     :scale 1
@@ -67,8 +86,14 @@
     :scale 0.5
     :offset 0.5}])
 
+(defn play-simple-sample! []
+  (-> (a/sample "audio/lcd.mp3")
+      (a/gain 0.5)
+      (a/out)))
+
 (defn start []
-  (play-loop pattern 40)
+;;  (play-simple-sample!)
+  (key-tracked-osc)
   (.log js/console "Started"))
 
 (defn stop []
@@ -76,7 +101,8 @@
   (.log js/console "Stopped"))
 
 (def samples
-  ["audio/808_kick_short.wav"
+  ["audio/lcd.mp3"
+   "audio/808_kick_short.wav"
    "audio/808_snare.wav"
    "audio/808_hat_closed.wav"])
 
@@ -84,11 +110,47 @@
   (doseq [sample samples]
     (a/load-sample sample)))
 
-(a/init-audio!)
-(load-samples samples)
+(defn- setup-button-listeners []
+  (-> (.getElementById js/document "start")
+      (.addEventListener "click" start))
+  (-> (.getElementById js/document "stop")
+      (.addEventListener "click" stop)))
 
-(-> (.getElementById js/document "start")
-    (.addEventListener "click" start))
 
-(-> (.getElementById js/document "stop")
-    (.addEventListener "click" stop))
+(defn note->hz [note]
+  (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
+
+;; keyCode -> midi offset from C
+(def keymap
+  (zipmap [65 87 83 69 68 70 84 71 89 72 85 74 75] (range)))
+
+(defn- key-tracked-const []
+  (let [const-node (a/constant)
+        hz-listener #(set! (.-value (.-offset const-node)) %)
+        event-listener #(-> %
+                            .-keyCode
+                            keymap
+                            (+ 40)
+                            note->hz
+                            hz-listener)]
+    (.addEventListener js/document "keydown" event-listener)
+    const-node))
+
+(defn- key-tracked-osc []
+  (-> (a/sin-osc (key-tracked-const))
+      (a/gain 0.05)
+      (a/out)))
+
+(defn- test-key-tracking []
+  (let [c (async-midi/kb-midi-chan)]
+    (go
+      (while true
+        (.log js/console (<! c))))))
+
+(defn main []
+  (a/init-audio!)
+  (load-samples samples)
+  (setup-button-listeners)
+  (test-key-tracking))
+
+(main)

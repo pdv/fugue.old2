@@ -13,4 +13,7 @@ pom.xml.asc
 /resources/public/js/out/*
 .#*
 *.swp
-*.log
+\#*\#
+*.mp3
+.DS_Store
+

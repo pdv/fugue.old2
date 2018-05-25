@@ -3,7 +3,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.946"]]
+                 [org.clojure/clojurescript "1.9.946"]
+                 [org.clojure/core.async "0.4.474"]]
   :plugins [[lein-figwheel "0.5.15"]]
   :cljsbuild {
     :builds [{:id "fugue2" 

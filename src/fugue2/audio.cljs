@@ -131,3 +131,8 @@
      (set! (.-value param) 0)
      (engine/observe-gate @ctx gate 0.95 gate-trigger)
      const-node)))
+
+;; Exp
+
+(defn constant []
+  (engine/constant @ctx))
