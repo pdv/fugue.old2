@@ -2,13 +2,6 @@
 
 ;; fugue - a cljs bootstrapped music programming environment
 
-(defn demo-synth []
-  (let [midi-in (midi/in "Oxygen 49")
-        freq (midi/note->cv :freq midi-in)
-        velo (midi->cv :velo midi-kb)]
-    (-> (saw freq)
-        (gain velo))))
-
 (defn note->hz [note]
   (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
 
@@ -41,7 +34,7 @@
 (defonce outs (atom []))
 
 (defn in [name]
-  (some #(eq name (.-name %)) ins)
+  (some #(eq name (.-name %)) ins))
 
 (defn out [name]
   (some #(eq name (.-name %)) outs))
