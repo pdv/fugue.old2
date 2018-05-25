@@ -16,4 +16,5 @@ pom.xml.asc
 \#*\#
 *.mp3
 .DS_Store
+figwheel_server.log
 
