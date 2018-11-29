@@ -26,6 +26,7 @@
 (defn- attach-param! [modulator param]
   (cond
     (number? modulator) (set! (.-value param) modulator)
+    ;; Do we have to set param to 0 initially?
     (node? modulator) (.connect modulator param)
     :else (throw (js/Error. "Invalid modulator type"))))
 
@@ -97,6 +98,7 @@
       (.exponentialRampToValueAtTime param 0.00001 time))
     (.exponentialRampToValueAtTime param value time)))
 
+;; NOTE: there is now cancelAndHoldAtTime
 (defn cancel-scheduled-values!
   "Cancels scheduled values but maintains the current value"
   [param time]

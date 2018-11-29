@@ -98,10 +98,11 @@
 
 (defn perc [a r]
   (fn [is-open]
-    {:levels [0 1 0]
-     :times [0 a r]}
-    {:levels []
-     :times []}))
+    (if is-open
+      {:levels [0 1 0]
+       :times [0 a r]}
+      {:levels []
+       :times []})))
 
 (defn adsr [a d s r]
   (fn [is-open]

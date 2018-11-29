@@ -2,7 +2,8 @@
   (:require-macros [cljs.core.async :refer [go]])
   (:require [cljs.core.async :as async :refer [<!]]
             [fugue2.async :as async-midi]
-            [fugue2.audio :as a]))
+            [fugue2.audio :as a]
+            [fugue2.audio2 :as a2]))
 
 (defn detuned-synth! []
   (-> (a/mix (a/saw 110 (a/lfo 0 0.5 30))
@@ -20,9 +21,6 @@
       (a/lpf (a/lfo 220 2 220))
       (a/gain 0.2)
       (a/out)))
-
-(defn feedback [src mod]
-  (a/sin-osc ))
 
 (defn test-gate []
   (let [curve (a/perc 0.1 1.0)
@@ -64,9 +62,9 @@
    45 "audio/808_kick.wav"})
 
 (defn sampler []
-  (-> midi/kb
+  (-> 44
       sample-map
-      audio/sample
+      a/sample
       a/out))
 
 (def sequencer
@@ -91,9 +89,42 @@
       (a/gain 0.5)
       (a/out)))
 
+(defn note->hz [note]
+  (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
+
+;; keyCode -> midi offset from C
+(def keymap
+  (zipmap [65 87 83 69 68 70 84 71 89 72 85 74 75] (range)))
+
+(defn- key-tracked-const []
+  (let [const-node (a/constant)
+        hz-listener #(set! (.-value (.-offset const-node)) %)
+        event-listener #(-> %
+                            .-keyCode
+                            keymap
+                            (+ 60)
+                            note->hz
+                            hz-listener)]
+    (.addEventListener js/document "keydown" event-listener)
+    const-node))
+
+(defn- key-tracked-osc []
+  (-> (a/sin-osc (key-tracked-const))
+      (a/gain 0.05)
+      (a/out)))
+
+(defn- test-key-tracking []
+  (let [c (async-midi/kb-chan)]
+    (go
+      (while true
+        (.log js/console (<! c))))))
+
+
 (defn start []
-;;  (play-simple-sample!)
-  (key-tracked-osc)
+  (.log js/console "About to start")
+  ;;  (play-simple-sample!)
+  ;; (key-tracked-osc)
+  (a2/play-synth!)
   (.log js/console "Started"))
 
 (defn stop []
@@ -116,41 +147,10 @@
   (-> (.getElementById js/document "stop")
       (.addEventListener "click" stop)))
 
-
-(defn note->hz [note]
-  (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
-
-;; keyCode -> midi offset from C
-(def keymap
-  (zipmap [65 87 83 69 68 70 84 71 89 72 85 74 75] (range)))
-
-(defn- key-tracked-const []
-  (let [const-node (a/constant)
-        hz-listener #(set! (.-value (.-offset const-node)) %)
-        event-listener #(-> %
-                            .-keyCode
-                            keymap
-                            (+ 40)
-                            note->hz
-                            hz-listener)]
-    (.addEventListener js/document "keydown" event-listener)
-    const-node))
-
-(defn- key-tracked-osc []
-  (-> (a/sin-osc (key-tracked-const))
-      (a/gain 0.05)
-      (a/out)))
-
-(defn- test-key-tracking []
-  (let [c (async-midi/kb-midi-chan)]
-    (go
-      (while true
-        (.log js/console (<! c))))))
-
 (defn main []
   (a/init-audio!)
   (load-samples samples)
-  (setup-button-listeners)
-  (test-key-tracking))
+  ;;  (test-key-tracking)
+  (setup-button-listeners))
 
 (main)

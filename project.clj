@@ -7,7 +7,7 @@
                  [org.clojure/core.async "0.4.474"]]
   :plugins [[lein-figwheel "0.5.15"]]
   :cljsbuild {
-    :builds [{:id "fugue2" 
+    :builds [{:id "fugue2"
               :source-paths ["src/"]
               :figwheel true
               :compiler {:main "fugue2.core"
