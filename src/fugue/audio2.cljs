@@ -59,29 +59,40 @@
 
 ;; ConstantSourceNode
 
-(defn add
-  [& modulators]
+(defn const [& modulators]
   (fn [ctx]
     (let [const-node (.createConstantSource ctx)]
       (run! #(modulate % ctx (.-offset const-node)) modulators)
       (.start const-node)
       const-node)))
 
-(defn gain
-  [in amp]
+
+;; GainNode
+
+(defn gain [in amp]
   (fn [ctx]
-    (let [in-node (in ctx)
+    (let [in-node ((const in) ctx)
           gain-node (.createGain ctx)]
       (modulate amp ctx (.-gain gain-node))
       (.connect in-node gain-node)
       gain-node)))
 
+
+;; Mix
+
+(def sum const)
+
 (defn multiply
-  [in modulator]
-  (gain in (add modulator)))
+  ([x y] (gain (const x) (const y)))
+  ([x y & more]
+   (reduce multiply (multiply x y) more)))
+
+(defn mix [& modulators]
+  (multiply (sum modulators)
+            (/ 1 (count modulators))))
 
 (defn lfo [value freq amount]
-  (add (multiply (sin-osc freq)
+  (sum (multiply (sin-osc freq)
                  amount)
        value))
 

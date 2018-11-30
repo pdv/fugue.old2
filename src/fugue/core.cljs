@@ -9,7 +9,7 @@
 
 (def synth
   (-> (a/saw (kb/kb-hz-chan))
-      (a/lpf (a/lfo 880 0.2 300) 1.3)))
+      (a/lpf (a/lfo 880 2 300) 1.3)))
 
 (defn effect [in]
   (-> in
