@@ -1,7 +1,8 @@
 (ns fugue.core
   (:require-macros [cljs.core.async :refer [go]])
   (:require [cljs.core.async :as async :refer [<!]]
-            [fugue.audio2 :as a]))
+            [fugue.audio2 :as a]
+            [fugue.keyboard :as kb]))
 
 ;;; Examples
 
@@ -36,6 +37,7 @@
 
 (defn main []
   (clicks! :start start)
-  (clicks! :stop stop))
+  (clicks! :stop stop)
+  (kb/monitor-chan (kb/key-down-chan)))
 
 (main)
