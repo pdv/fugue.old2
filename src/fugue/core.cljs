@@ -2,12 +2,13 @@
   (:require-macros [cljs.core.async :refer [go]])
   (:require [cljs.core.async :as async :refer [<!]]
             [fugue.audio2 :as a]
+            [fugue.async :as fasync]
             [fugue.keyboard :as kb]))
 
 ;;; Examples
 
 (def synth
-  (-> (a/saw 440)
+  (-> (a/saw (kb/kb-hz-chan))
       (a/lpf (a/lfo 880 0.2 300) 1.3)))
 
 (defn effect [in]
@@ -37,8 +38,7 @@
 
 (defn main []
   (clicks! :start start)
-  (clicks! :stop stop)
-  (kb/monitor-chan (kb/key-down-chan)))
+  (clicks! :stop stop))
 
 (main)
 

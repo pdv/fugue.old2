@@ -3,7 +3,7 @@
 (def node? (partial instance? js/AudioNode))
 
 (defprotocol Modulator
-  "Able to modulate an AudioParam"
+  "Able to modulate an AudioParam. Modulator has to be the first argument, and I wish you didn't have to pass ctx."
   (modulate [modulator ctx param]))
 
 (extend-protocol Modulator
@@ -13,7 +13,6 @@
   function
   (modulate [modulator ctx param]
     (let [modulator-node (modulator ctx)]
-      (.log js/console "Creating modulator" modulator)
       (.connect modulator-node param)))
   js/AudioNode
   (modulate [modulator ctx param]
@@ -24,7 +23,6 @@
 (defn gain
   [in amp]
   (fn [ctx]
-    (.log js/console "Creating gain")
     (let [in-node (in ctx)
           gain-node (.createGain ctx)]
       (modulate amp ctx (.-gain gain-node))
@@ -37,7 +35,6 @@
   ([type freq] (oscillator type freq 0))
   ([type freq detune]
    (fn [ctx]
-     (.log js/console "Creating oscillator")
      (let [osc-node (.createOscillator ctx)]
        (set! (.-type osc-node) (clj->js type))
        (set! (.-value (.-frequency osc-node)) 0)
@@ -57,7 +54,6 @@
   ([type in freq] (biquad-filter type in freq 1))
   ([type in freq q]
    (fn [ctx]
-     (.log js/console "Creating filter")
      (let [in-node (in ctx)
            filter-node (.createBiquadFilter ctx)]
        (set! (.-type filter-node) (clj->js type))
