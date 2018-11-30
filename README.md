@@ -36,7 +36,12 @@ Though development began independently, Fugue and Klangmeister have the same goa
         (env-gen (pluck 0.3) gate-chan))))
 ```
 
-3. Fugue uses `ConstantSourceNode`. This experimental addition to the Web Audio API grants envelopes, lfos, and other parameter modulators first-class treatment. As of this writing, it's only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
+3. Fugue uses `ConstantSourceNode`. This experimental addition to the Web Audio API allows us to add and multiply signals:
+
+- Adding signals is accomplished by attaching them to the `offset` of a `ConstantSourceNode`. The result of the CSN is the sum of the inputs to `offset`.
+- Multiplying a carrier and modulator signal is done by attaching the carrier to a `GainNode` whose `gain` is modulated by the modulator.
+
+With addition and multiplication, we can create complex control signals like lfos and envelopes.
 
 ```clojure
 (defn wobble-bass [note-chan gate-chan wobble-rate-chan]
@@ -44,6 +49,10 @@ Though development began independently, Fugue and Klangmeister have the same goa
       (env-gen (adsr 0.05 0.1 0.9 0.4) gate-chan)
       (lpf (lfo 440 wobble-rate-chan))))
 ```
+
+As of this writing, `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
+
+
 
 
 ## Usage

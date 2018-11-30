@@ -17,16 +17,6 @@
   (modulate [modulator ctx param]
     (.connect modulator param)))
 
-;; Gain
-
-(defn gain
-  [in amp]
-  (fn [ctx]
-    (let [in-node (in ctx)
-          gain-node (.createGain ctx)]
-      (modulate amp ctx (.-gain gain-node))
-      (.connect in-node gain-node)
-      gain-node)))
 
 ;; Oscillators
 
@@ -47,6 +37,7 @@
 (def square (partial oscillator :square))
 (def tri-osc (partial oscillator :triangle))
 
+
 ;; Filters
 
 (defn biquad-filter
@@ -65,21 +56,34 @@
 (def hpf (partial biquad-filter :highpass))
 (def bpf (partial biquad-filter :bandpass))
 
+
 ;; ConstantSourceNode
 
-(defn constant
+(defn add
   [& modulators]
   (fn [ctx]
-    (.log js/console "Creating const")
     (let [const-node (.createConstantSource ctx)]
       (run! #(modulate % ctx (.-offset const-node)) modulators)
       (.start const-node)
       const-node)))
 
+(defn gain
+  [in amp]
+  (fn [ctx]
+    (let [in-node (in ctx)
+          gain-node (.createGain ctx)]
+      (modulate amp ctx (.-gain gain-node))
+      (.connect in-node gain-node)
+      gain-node)))
+
+(defn multiply
+  [in modulator]
+  (gain in (add modulator)))
+
 (defn lfo [value freq amount]
-  (let [osc-node (sin-osc freq)
-        modulator (gain osc-node amount)]
-    (constant value modulator)))
+  (add (multiply (sin-osc freq)
+                 amount)
+       value))
 
 ;; Output
 
