@@ -38,6 +38,7 @@
 (defn main []
   (clicks! :start start)
   (clicks! :stop stop)
-  (kb/monitor-chan (kb/key-down-chan)))
+  (kb/monitor-chan (kb/kb-hz-chan)))
 
 (main)
+
