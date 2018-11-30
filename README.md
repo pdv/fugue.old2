@@ -1,12 +1,12 @@
 # fugue
 
-- "Overtone on the web"
+- "[Overtone](https://github.com/overtone/overtone) on the web"
 - A Clojurescript library for web midi and audio
 - A live music programming environment in the browser
 
-### Comparison to klangmeister / cljs-bach
+### Comparison to [klangmeister](https://github.com/ctford/klangmeister) / [cljs-bach](https://github.com/ctford/cljs-bach)
 
-Though development began independently, Fugue and Klangmeister have the same goal: an Overtone-like music programming environment in the browser. Much of the approach is the same, but there are a few key differences:
+Though development began independently, Fugue and Klangmeister have the same goal: an Overtone-like music programming environment in the browser. Fugue has adpoted Klangmeister's approach to nodes (defining them as `AudioContext -> AudioNode` functions), but has a few important differences:
 
 1. Fugue adopts Overtone's approach of treating filters and other audio effects as functions of audio sources. This allows traditional function composition techniques (especially the `->` macro) to be used to create chains:
 
@@ -51,9 +51,6 @@ With addition and multiplication, we can create complex control signals like lfo
 ```
 
 As of this writing, `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
-
-
-
 
 ## Usage
 
