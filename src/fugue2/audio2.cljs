@@ -2,7 +2,7 @@
 
 (def node? (partial instance? js/AudioNode))
 
-(defn- attach-param! [modulator param]
+(defn- attach-param! [param modulator]
   (cond
     (number? modulator) (set! (.-value param) modulator)
     (node? modulator) (.connect modulator param)
@@ -17,9 +17,8 @@
      (let [osc-node (.createOscillator ctx)]
        (set! (.-type osc-node) (clj->js type))
        (set! (.-value (.-frequency osc-node)) 0)
-       (attach-param! freq (.-frequency osc-node))
-       (attach-param! detune (.-detune osc-node))
-       (.log js/console "Starting oscillator")
+       (attach-param! (.-frequency osc-node) freq)
+       (attach-param! (.-detune osc-node) detune)
        (.start osc-node)
        osc-node))))
 
@@ -37,8 +36,8 @@
      (let [in-node (in ctx)
            filter-node (.createBiquadFilter ctx)]
        (set! (.-type filter-node) (clj->js type))
-       (attach-param! freq (.-frequency filter-node))
-       (attach-param! q (.-Q filter-node))
+       (attach-param! (.-frequency filter-node) freq)
+       (attach-param! (.-Q filter-node) q)
        (.connect in-node filter-node)
        filter-node))))
 

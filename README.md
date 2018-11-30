@@ -8,7 +8,7 @@ Though development began independently, Fugue and Klangmeister share effective t
 
 1. Fugue adopts Overtone's approach of treating filters and other audio effects as functions of audio sources. This allows traditional function composition techniques (especially the `->` macro) to be used to create chains:
 
-```
+```clojure
 (def example-synth
   (-> (sin-osc 440)
       (lpf 880 1.3)))
@@ -26,7 +26,7 @@ Though development began independently, Fugue and Klangmeister share effective t
 
 2. Fugue uses `core.async` for midi. Channels are a natural way to model a midi signal, which is an asynchronous data stream. This makes Fugue especially suited for live performance using midi controllers, interfacing with the Web MIDI API.
 
-```
+```clojure
 (defn basic-synth [midi-in]
   (let [note-chan (:note midi-in)
         hz-chan (note->hz note-chan)
@@ -37,7 +37,7 @@ Though development began independently, Fugue and Klangmeister share effective t
 
 3. Fugue uses `ConstantSourceNode`. This experimental addition to the Web Audio API opens up a world of possibilities espeically for envelopes, lfos, and other parameter modulators.
 
-```
+```clojure
 (defn wobble-bass [note-chan gate-chan wobble-rate-chan]
   (-> (saw (note->hz note-chan))
       (env-gen (adsr 0.05 0.1 0.9 0.4) gate-chan)
