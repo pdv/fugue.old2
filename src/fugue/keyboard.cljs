@@ -38,17 +38,17 @@
 (defn key-down-chan []
   (cb->chan key-down-listener))
 
+(defn kd->hz [kd-event]
+  (-> kd-event
+      .-keyCode
+      key-code->note
+      note->hz))
+
 (defn kb-hz-chan []
   (let [hz-chan (chan)
-        kd-chan (key-down-chan)]
-    (pipeline
-     4
-     hz-chan
-     (map #(-> %
-               .-keyCode
-               key-code->note
-               note->hz))
-     kd-chan)
+        kd-chan (key-down-chan)
+        x-form (map kd->hz)]
+    (pipeline 4 hz-chan (map kd->hz) kd-chan)
     hz-chan))
 
 (defn monitor-chan [c]
