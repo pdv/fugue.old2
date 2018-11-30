@@ -1,5 +1,5 @@
-(ns fugue2.keyboard
-  (:require [fugue2.audio :as a]))
+(ns fugue.keyboard
+  (:require [fugue.audio :as a]))
 
 (def keymap
   (zipmap [65 87 83 69 68 70 84 71 89 72 85 74 75] (range)))
@@ -17,3 +17,11 @@
                            hz-listener)]
     (.addEventListener js/document "keydown" event-listener)
     const-node))
+
+(defn- test-key-tracking []
+  (let [c (async-midi/kb-chan)]
+    (go
+      (while true
+        (.log js/console (<! c))))))
+
+

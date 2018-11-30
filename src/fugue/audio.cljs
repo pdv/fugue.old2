@@ -1,5 +1,5 @@
-(ns fugue2.audio
-  (:require [fugue2.engine :as engine]))
+(ns fugue.audio
+  (:require [fugue.engine :as engine]))
 
 (defonce ctx (atom nil))
 (defonce buffers (atom {}))

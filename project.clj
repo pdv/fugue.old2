@@ -1,5 +1,5 @@
-(defproject fugue2 "0.1.0-SNAPSHOT"
-  :description "Fugue 2.0: ConstantSourceNode"
+(defproject fugue "0.1.0-SNAPSHOT"
+  :description "Programmable music on the web"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
@@ -10,7 +10,7 @@
     :builds [{:id "fugue2"
               :source-paths ["src/"]
               :figwheel true
-              :compiler {:main "fugue2.core"
+              :compiler {:main "fugue.core"
                          :asset-path "js/out"
                          :output-to "resources/public/js/fugue.js"
                          :output-dir "resources/public/js/out"}}]})

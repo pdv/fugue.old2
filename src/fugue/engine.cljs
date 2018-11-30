@@ -1,4 +1,4 @@
-(ns fugue2.engine)
+(ns fugue.engine)
 
 (defn make-ctx [] (js/AudioContext.))
 

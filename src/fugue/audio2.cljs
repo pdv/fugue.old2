@@ -1,4 +1,4 @@
-(ns fugue2.audio2)
+(ns fugue.audio2)
 
 (def node? (partial instance? js/AudioNode))
 
@@ -50,20 +50,6 @@
 (defn play!
   ([in] (play! in (js/AudioContext.)))
   ([in ctx]
-   (.connect (in ctx) (.-destination ctx))))
+   (.connect (in ctx) (.-destination ctx))
+   ctx))
 
-;; Examples
-
-(def example-synth
-  (-> (sin-osc 440)
-      (lpf 880 1.3)))
-
-(defn example-effect [in]
-  (-> in
-      (lpf 440 1.2)
-      (hpf 990 2.0)))
-
-(defn play-synth! []
-  (-> example-synth
-      example-effect
-      play!))

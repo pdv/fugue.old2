@@ -1,6 +1,4 @@
-(ns fugue2.midi)
-
-;; fugue - a cljs bootstrapped music programming environment
+(ns fugue.midi)
 
 (defn note->hz [note]
   (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
