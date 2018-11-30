@@ -59,9 +59,12 @@
   (-> (sin-osc 440)
       (lpf 880 1.3)))
 
-(def example-effect
-  (-> (lpf 440 1.2)
+(defn example-effect [in]
+  (-> in
+      (lpf 440 1.2)
       (hpf 990 2.0)))
 
 (defn play-synth! []
-  (play! example-synth))
+  (-> example-synth
+      example-effect
+      play!))
