@@ -25,7 +25,7 @@ Though development began independently, Fugue and Klangmeister have the same goa
   (-> synth effects play!))
 ```
 
-2. Fugue uses `core.async` for midi. Channels are a natural way to model a midi signal, which is an asynchronous data stream. This makes Fugue especially suited for live performance using midi controllers, interfacing with the Web MIDI API. Midi effects can be defined as transducers, and operate on "sheet music" or live performance.
+2. Fugue uses `core.async` for midi. Channels are a natural way to model a midi signal, which is an asynchronous data stream. This makes Fugue especially suited for live performance using midi controllers, interfacing with the Web MIDI API. Midi effects can be defined as transducers, allowing them to operate on different transport mechanisms (sequences, channels, rx chains).
 
 ```clojure
 (defn harp [midi-in]
