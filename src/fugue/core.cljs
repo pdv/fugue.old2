@@ -7,8 +7,8 @@
 ;;; Examples
 
 (def synth
-  (-> (a/sin-osc 440)
-      (a/lpf 880 1.3)))
+  (-> (a/saw 440)
+      (a/lpf (a/lfo 880 0.2 300) 1.3)))
 
 (defn effect [in]
   (-> in
@@ -16,7 +16,7 @@
       (a/hpf 990 2.0)))
 
 (defn play-synth! []
-  (-> synth effect a/play!))
+  (-> synth a/play!))
 
 ;;; Demo
 
@@ -38,7 +38,7 @@
 (defn main []
   (clicks! :start start)
   (clicks! :stop stop)
-  (kb/monitor-chan (kb/kb-hz-chan)))
+  (kb/monitor-chan (kb/key-down-chan)))
 
 (main)
 

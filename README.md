@@ -36,7 +36,7 @@ Though development began independently, Fugue and Klangmeister have the same goa
         (env-gen (pluck 0.3) gate-chan))))
 ```
 
-3. Fugue uses `ConstantSourceNode`. This experimental addition to the Web Audio API grants envelopes, lfos, and other parameter modulators first-class treatment.
+3. Fugue uses `ConstantSourceNode`. This experimental addition to the Web Audio API grants envelopes, lfos, and other parameter modulators first-class treatment. As of this writing, it's only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
 
 ```clojure
 (defn wobble-bass [note-chan gate-chan wobble-rate-chan]
