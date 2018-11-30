@@ -12,8 +12,7 @@
     (set! (.-value param) modulator))
   function
   (modulate [modulator ctx param]
-    (let [modulator-node (modulator ctx)]
-      (.connect modulator-node param)))
+    (.connect (modulator ctx) param))
   js/AudioNode
   (modulate [modulator ctx param]
     (.connect modulator param)))
