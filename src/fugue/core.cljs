@@ -7,8 +7,8 @@
 
 ;;; Examples
 
-(def synth
-  (-> (a/saw (kb/kb-hz-chan))
+(defn synth [hz-chan]
+  (-> (a/saw hz-chan)
       (a/lpf (a/lfo 880 2 300) 1.3)))
 
 (defn effect [in]
@@ -20,23 +20,43 @@
 
 (defonce ctx (atom nil))
 
-(defn start []
+(defn test-synth! []
+  (let [kb-midi-chan (kb/make-kb-midi-chan)
+        hz-chan (:hz (kb/midi->cv kb-midi-chan))]
+    (reset! ctx (a/play! synth))))
+
+(defn test-cv! []
+  (let [kb-midi-chan (kb/make-kb-midi-chan)
+        {hz-chan :hz
+         gate-chan :gate} (kb/midi->cv kb-midi-chan)]
+    (kb/monitor-chan "hz:" hz-chan)
+    (kb/monitor-chan "gate:" gate-chan)))
+
+(defn start! []
   (.log js/console "Starting")
-  ;; (reset! ctx (a/play! synth))
-  (kb/monitor-chan (kb/kb-midi-chan))
+  ; (test-kb!)
+  (test-cv!)
   (.log js/console "Started"))
 
-(defn stop []
+(defn stop! []
   (.close @ctx)
   (.log js/console "Stopped"))
 
-(defn- clicks! [id cb]
+(defn- bind-clicks [id cb]
   (-> (.getElementById js/document (clj->js id))
       (.addEventListener "click" cb)))
 
 (defn main []
-  (clicks! :start start)
-  (clicks! :stop stop))
+  (bind-clicks :start start!)
+  (bind-clicks :stop stop!))
+
 
 (main)
 
+(comment
+  (defn every-function-ever [dep1 dep2 dep3]
+    (let [foo (fn1 dep1)
+          bar (fn2 dep2)]
+      (fn3! dep3)
+      (+ foo bar)))
+)
