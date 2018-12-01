@@ -3,6 +3,7 @@
   (:require [cljs.core.async :as async :refer [<!]]
             [fugue.audio2 :as a]
             [fugue.async :as fasync]
+            [fugue.envelope :as e]
             [fugue.keyboard :as kb]))
 
 ;;; Examples
@@ -18,9 +19,10 @@
 
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
-         gate-chan :gate} (kb/midi->cv midi-chan)]
+         gate-chan :gate} (kb/midi->cv midi-chan)
+        env (e/env-gen (e/adsr 5, 10, 0.1, 1.0) gate-chan)]
     (-> (a/saw hz-chan)
-        (a/gain gate-chan))))
+        (a/gain env))))
 
 ;;; Demo
 

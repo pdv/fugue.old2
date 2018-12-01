@@ -10,22 +10,30 @@
       [{:time a :value gate-val}
        {:time (+ a d) :value (* gate-val s)}])))
 
+(defn cancel-and-hold! [param time]
+  (let [value (.-value param)]
+    (.cancelScheduledValues param time)
+    (.setValueAtTime param value time)))
+
 (defn schedule-value!
   "Ramps the parameter to the value at the given time."
   [param value time]
   (if (= value 0)
-    (do ; You can't exponential ramp to 0
-      (.exponentialRampToValueAtTime param 0.00001 time))
+    (.linearRampToValueAtTime param 0 time)
     (.exponentialRampToValueAtTime param value time)))
 
 (defn env-gen [env gate]
   (fn [ctx]
-    (let [const-node (.createConstantSource ctx)]
+    (let [const-node (.createConstantSource ctx)
+          param (.-offset const-node)]
       (go-loop []
-        (doseq [env-val (env (<! gate))
-                :let [time (+ (.-currentTime ctx) (:time env-val))
-                      value (:value env-val)]]
-          (schedule-value! (.-offset const-node) value time))
-        (recur))
+        (let [env-values (env (<! gate))
+              now (.-currentTime ctx)]
+          (cancel-and-hold! param now)
+          (doseq [{dtime :time
+                   value :value} env-values]
+            (schedule-value! param (+ now dtime) value))
+          (recur)))
+      (.start const-node)
       const-node)))
 
