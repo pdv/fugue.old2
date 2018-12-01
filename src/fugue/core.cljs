@@ -16,26 +16,19 @@
       (a/lpf 440 1.2)
       (a/hpf 990 2.0)))
 
+(defn midi-synth [midi-chan]
+  (let [{hz-chan :hz
+         gate-chan :gate} (kb/midi->cv midi-chan)]
+    (-> (a/saw hz-chan)
+        (a/gain gate-chan))))
+
 ;;; Demo
 
 (defonce ctx (atom nil))
 
-(defn test-synth! []
-  (let [kb-midi-chan (kb/make-kb-midi-chan)
-        hz-chan (:hz (kb/midi->cv kb-midi-chan))]
-    (reset! ctx (a/play! synth))))
-
-(defn test-cv! []
-  (let [kb-midi-chan (kb/make-kb-midi-chan)
-        {hz-chan :hz
-         gate-chan :gate} (kb/midi->cv kb-midi-chan)]
-    (kb/monitor-chan "hz:" hz-chan)
-    (kb/monitor-chan "gate:" gate-chan)))
-
 (defn start! []
   (.log js/console "Starting")
-  ; (test-kb!)
-  (test-cv!)
+  (a/play! (midi-synth (kb/make-kb-midi-chan)))
   (.log js/console "Started"))
 
 (defn stop! []
