@@ -10,18 +10,6 @@
   (zipmap ["a" "w" "s" "e" "d" "f" "t" "g" "y" "h" "u" "j" "k" "l" "p"]
           (range)))
 
-(defn note-on
-  ([note] (note-on note 127))
-  ([note velocity]
-   {:type :note
-    :data {:note note
-           :velocity 127}}))
-
-(defn note-off [note]
-  {:type :note
-   :data {:note note
-          :velocity 0}})
-
 (defn keypress->midi [rf]
   "A stateful transducer that maps keypress events to midi events.
   (a) -> c, (w) -> c#, (s) -> d, ...
@@ -33,18 +21,17 @@
       ([result keypress]
        (let [type (.-type keypress)
              key (.-key keypress)
-             offset (key->offset key)
-             note (+ 60 offset (* 12 @voctave))]
-         (.log js/console type key offset note)
-         (if (not= offset nil)
-           (rf result (case type
-                        "keydown" (note-on note 127)
-                        "keyup" (note-off note)))
-           (do
-             (when (and (= type "keydown") (= key "z"))
-               (vswap! voctave dec))
-             (when (and (= type "keydown") (= key "x"))
-               (vswap! voctave inc))
+             offset (key->offset key)]
+         (if-not (nil? offset)
+           (rf result (into {:note (+ 60 offset (* 12 @voctave))}
+                            (case type
+                              "keydown" {:type :note-on :velo 127}
+                              "keyup" {:type :note-off :velo 0})))
+           (when (= "keydown" type)
+             (vswap! voctave (case key
+                               "z" dec
+                               "x" inc
+                               identity))
              result)))))))
 
 (defn kb-midi-chan []
