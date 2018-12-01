@@ -22,7 +22,8 @@
 
 (defn start []
   (.log js/console "Starting")
-  (reset! ctx (a/play! synth))
+  ;; (reset! ctx (a/play! synth))
+  (kb/monitor-chan (kb/kb-midi-chan))
   (.log js/console "Started"))
 
 (defn stop []

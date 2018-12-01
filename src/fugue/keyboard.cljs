@@ -3,55 +3,60 @@
   (:require [fugue.audio :as a]
             [cljs.core.async :as async :refer [chan <! put! close! pipeline]]))
 
-;; to offset from C
-(def keymap
-  (zipmap [65 87 83 69 68 70 84 71 89 72 85 74 75] (range)))
-
-(defn key-code->note [key-code]
-  (+ 60 (keymap key-code)))
-
 (defn note->hz [note]
   (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
 
-(defn key-tracked-const []
-  (let [const-node (a/constant)
-        hz-listener #(set! (.-value (.-offset const-node)) %)
-        event-listener #(-> %
-                            .-keyCode
-                            key-code->note
-                            note->hz
-                            hz-listener)]
-    (.addEventListener js/document "keydown" event-listener)
-    const-node))
+(def key->offset ; from c
+  (zipmap ["a" "w" "s" "e" "d" "f" "t" "g" "y" "h" "u" "j" "k" "l" "p"]
+          (range)))
 
-(defn cb->chan [f & args]
-  (let [c (chan)]
-    (apply f (concat args [(fn [x]
-                             (if (nil? x)
-                               (close! c)
-                               (put! c x)))]))
+(defn note-on
+  ([note] (note-on note 127))
+  ([note velocity]
+   {:type :note
+    :data {:note note
+           :velocity 127}}))
+
+(defn note-off [note]
+  {:type :note
+   :data {:note note
+          :velocity 0}})
+
+(defn keypress->midi [rf]
+  "A stateful transducer that maps keypress events to midi events.
+  (a) -> c, (w) -> c#, (s) -> d, ...
+  (z) lowers one octave, (x) raises one octave"
+  (let [voctave (volatile! 0)]
+    (fn
+      ([] (rf))
+      ([result] (rf result))
+      ([result keypress]
+       (let [type (.-type keypress)
+             key (.-key keypress)
+             offset (key->offset key)
+             note (+ 60 offset (* 12 @voctave))]
+         (.log js/console type key offset note)
+         (if (not= offset nil)
+           (rf result (case type
+                        "keydown" (note-on note 127)
+                        "keyup" (note-off note)))
+           (do
+             (when (and (= type "keydown") (= key "z"))
+               (vswap! voctave dec))
+             (when (and (= type "keydown") (= key "x"))
+               (vswap! voctave inc))
+             result)))))))
+
+(defn kb-midi-chan []
+  (let [c (chan 1 (comp (dedupe) keypress->midi))]
+    (doseq [type ["keydown" "keyup"]]
+      (.addEventListener js/document type (partial put! c)))
     c))
 
-(defn key-down-listener [cb]
-  (.addEventListener js/document "keydown" cb))
-
-(defn key-down-chan []
-  (cb->chan key-down-listener))
-
-(defn kd->hz [kd-event]
-  (-> kd-event
-      .-keyCode
-      key-code->note
-      note->hz))
-
 (defn kb-hz-chan []
-  (let [hz-chan (chan)
-        kd-chan (key-down-chan)
-        x-form (map kd->hz)]
-    (pipeline 4 hz-chan (map kd->hz) kd-chan)
-    hz-chan))
+  (async/map (comp note->hz :note) [(kb-midi-chan)]))
 
 (defn monitor-chan [c]
-  (go (while true (.log js/console (<! c)))))
+  (go (while true (.log js/console (.toString (<! c))))))
 
 
