@@ -53,14 +53,6 @@
    (dedupe)
    (map #(/ % 128))))
 
-(defn test-mult [in-chan]
-  (let [mult-chan (async/mult in-chan)
-        ret-chan (async/chan)]
-    (async/tap mult-chan ret-chan)
-    ret-chan))
-
-; (defn split [chan & xforms])
-
 (defn midi->cv [midi]
   "Splits a midi channel to a hz channel and a gate [0, 1) channel"
   (let [midi-mult (async/mult midi)
