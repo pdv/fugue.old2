@@ -6,7 +6,7 @@
 
 (extend-protocol a/Modulator
   ManyToManyChannel
-  (modulate [modulator ctx param]
+  (modulate! [modulator ctx param]
     (go-loop []
       ;; (a/modulate value ctx param)
       (set! (.-value param) (<! modulator))
