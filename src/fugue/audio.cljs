@@ -1,139 +1,111 @@
-(ns fugue.audio
-  (:require [fugue.engine :as engine]))
+(ns fugue.audio)
 
-(defonce ctx (atom nil))
-(defonce buffers (atom {}))
+(def node? (partial instance? js/AudioNode))
 
-(defn init-audio! []
-  (reset! ctx (engine/make-ctx)))
+(defprotocol Modulator
+  "Able to modulate an AudioParam. Modulator has to be the first argument, and I wish you didn't have to pass ctx."
+  (modulate [modulator ctx param]))
 
-(defn reset-audio! []
-  (engine/close! @ctx)
-  (init-audio!))
+(extend-protocol Modulator
+  number
+  (modulate [modulator ctx param]
+    (set! (.-value param) modulator))
+  function
+  (modulate [modulator ctx param]
+    (.connect (modulator ctx) param))
+  js/AudioNode
+  (modulate [modulator ctx param]
+    (.connect modulator param)))
 
-(defn out [in]
-  (engine/out @ctx in)
-  in)
 
-(defn now []
-  (engine/current-time @ctx))
+;; Oscillators
 
-;;; Mix
+(defn oscillator
+  ([type freq] (oscillator type freq 0))
+  ([type freq detune]
+   (fn [ctx]
+     (let [osc-node (.createOscillator ctx)]
+       (set! (.-type osc-node) (clj->js type))
+       (set! (.-value (.-frequency osc-node)) 0)
+       (modulate freq ctx (.-frequency osc-node))
+       (modulate detune ctx (.-detune osc-node))
+       (.start osc-node)
+       osc-node))))
 
-(defn gain
-  "Multiplies the amplitude of in by amp"
-  [in amp]
-  (engine/gain @ctx in amp))
+(def sin-osc (partial oscillator :sine))
+(def saw (partial oscillator :sawtooth))
+(def square (partial oscillator :square))
+(def tri-osc (partial oscillator :triangle))
 
-(defn mix
-  "Combines the inputs into one signal"
-  [& args]
-  (engine/mix @ctx args))
 
-;;; Oscillators
+;; Filters
 
-(defn sin-osc
-  "Starts a sine wave oscillator at the given frequency"
-  ([freq] (sin-osc freq 0))
-  ([freq detune]
-   (engine/oscillator @ctx :sine freq detune)))
+(defn biquad-filter
+  ([type in freq] (biquad-filter type in freq 1))
+  ([type in freq q]
+   (fn [ctx]
+     (let [in-node (in ctx)
+           filter-node (.createBiquadFilter ctx)]
+       (set! (.-type filter-node) (clj->js type))
+       (set! (.-value (.-frequency filter-node)) 0)
+       (modulate freq ctx (.-frequency filter-node))
+       (modulate q ctx (.-Q filter-node))
+       (.connect in-node filter-node)
+       filter-node))))
 
-(defn saw
-  "Starts a saw wave oscillator at the given frequency"
-  ([freq] (saw freq 0))
-  ([freq detune]
-   (engine/oscillator @ctx :sawtooth freq detune)))
+(def lpf (partial biquad-filter :lowpass))
+(def hpf (partial biquad-filter :highpass))
+(def bpf (partial biquad-filter :bandpass))
 
-(defn square
-  "Starts a square wave oscillator at the given frequency"
-  ([freq] (square freq 0))
-  ([freq detune]
-   (engine/oscillator @ctx :square freq detune)))
 
-(defn tri
-  "Starts a triangle wave oscillator at the given frequency"
-  ([freq] (tri freq 0))
-  ([freq detune]
-   (engine/oscillator @ctx :triangle freq detune)))
+;; ConstantSourceNode
 
-;;; Samples
+(defn const [& modulators]
+  (fn [ctx]
+    (let [const-node (.createConstantSource ctx)
+          param (.-offset const-node)]
+      (set! (.-value param) 0)
+      (doseq [modulator modulators]
+        (modulate modulator ctx param))
+      (.start const-node)
+      const-node)))
 
-(defn load-sample [url]
-  (engine/load-sample @ctx url #(swap! buffers assoc url %)))
 
-(defn sample
-  ([url] (sample url 0))
-  ([url time]
-   (engine/buffer-node @ctx (@buffers url) time)))
+;; GainNode
 
-;;; Filters
+(defn gain [in amp]
+  (fn [ctx]
+    (let [in-node ((const in) ctx)
+          gain-node (.createGain ctx)]
+      (set! (.-value (.-gain gain-node)) 0)
+      (modulate amp ctx (.-gain gain-node))
+      (.connect in-node gain-node)
+      gain-node)))
 
-(defn lpf
-  "Applies a low-pass filter to the input"
-  ([in freq] (lpf in freq 1))
-  ([in freq q]
-   (engine/biquad-filter @ctx in :lowpass freq q)))
 
-(defn hpf
-  "Applies a high-pass filter to the input"
-  ([in freq] (lpf in freq 1))
-  ([in freq q]
-   (engine/biquad-filter @ctx in :highpass freq q)))
+;; Mix
 
-(defn bpf
-  "Applies a band-pass filter to the input"
-  ([in freq] (lpf in freq 1))
-  ([in freq q]
-   (engine/biquad-filter @ctx in :bandpass freq q)))
+(def + const)
 
-;;; Modulators
+(defn *
+  ([x y] (gain (const x) (const y)))
+  ([x y & more]
+   (reduce multiply (multiply x y) more)))
 
-(defn lfo
-  [value freq amount]
-  (let [osc-node (sin-osc freq)
-        modulator (gain osc-node amount)]
-    (engine/constant @ctx value modulator)))
+(defn mix [& modulators]
+  (multiply (sum modulators)
+            (/ 1 (count modulators))))
 
-;; Envelopes
+(defn lfo [value freq amount]
+  (sum (multiply (sin-osc freq)
+                 amount)
+       value))
 
-(defn perc [a r]
-  (fn [is-open]
-    (if is-open
-      {:levels [0 1 0]
-       :times [0 a r]}
-      {:levels []
-       :times []})))
+;; Output
 
-(defn adsr [a d s r]
-  (fn [is-open]
-    {:levels [0 1 s]
-     :times [0 a d]}
-    {:levels [0]
-     :times [r]}))
+(defn play!
+  ([in] (play! in (js/AudioContext.)))
+  ([in ctx]
+   (.connect (in ctx) (.-destination ctx))
+   ctx))
 
-(defn apply-curve [absolute-levels relative-times param]
-  (let [now (engine/current-time @ctx)
-        absolute-times (map #(+ now %) relative-times)]
-    (engine/cancel-scheduled-values! param now)
-    (doseq [[level time] (map list absolute-levels absolute-times)]
-      (engine/schedule-value! param level time))))
-
-(defn env-gen
-  ([env gate] (env-gen env gate 1))
-  ([env gate scale] (env-gen env gate scale 0))
-  ([env gate scale bias]
-   (let [const-node (engine/constant @ctx)
-         param (.-offset const-node)
-         gate-trigger (fn [gate-open]
-                        (let [curve (env gate-open)
-                              levels (map #(+ bias (* scale %)) (:levels curve))
-                              times (:times curve)]
-                          (apply-curve levels times param)))]
-     (set! (.-value param) 0)
-     (engine/observe-gate @ctx gate 0.95 gate-trigger)
-     const-node)))
-
-;; Exp
-
-(defn constant []
-  (engine/constant @ctx))

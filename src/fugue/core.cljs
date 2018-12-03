@@ -1,7 +1,7 @@
 (ns fugue.core
   (:require-macros [cljs.core.async :refer [go]])
   (:require [cljs.core.async :as async :refer [<!]]
-            [fugue.audio2 :as a]
+            [fugue.audio :as a]
             [fugue.async :as fasync]
             [fugue.envelope :as e]
             [fugue.keyboard :as kb]))
@@ -20,8 +20,8 @@
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
          gate-chan :gate} (kb/midi->cv midi-chan)
-        env (e/env-gen (e/adsr 0.03 0.05 0.8 0.1) gate-chan)
-        f-env (a/+ 20 (a/* env 800))]
+        env (e/env-gen (e/perc 0.03 1) gate-chan)
+        f-env (a/+ 2 (a/* env 8000))]
     (-> (a/saw hz-chan)
         (a/lpf f-env)
         (a/gain 0.6))))

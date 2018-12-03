@@ -2,6 +2,16 @@
   (:require-macros [cljs.core.async :refer [go-loop]])
   (:require [cljs.core.async :as async :refer [<!]]))
 
+;; TODO
+;; - specify curve
+
+(defn perc [a d]
+  (fn [gate-val]
+    (if (not= 0 gate-val)
+      [{:time a :value gate-val}
+       {:time d :value 0}]
+      [{:time d :value 0}])))
+
 (defn adsr [a d s r]
   (fn [gate-val]
     (if (= 0 gate-val)
@@ -18,9 +28,8 @@
 (defn schedule-value!
   "Ramps the parameter to the value at the given time."
   [param value time]
-  (if (= value 0)
-    (.linearRampToValueAtTime param 0.0001 time)
-    (.exponentialRampToValueAtTime param value time)))
+  (let [target (if (= value 0) 0.0001 value)]
+    (.exponentialRampToValueAtTime param target time)))
 
 (defn env-gen [env gate]
   (fn [ctx]

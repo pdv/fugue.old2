@@ -1,6 +1,32 @@
 (ns fugue.sampler
   (:require [fugue.audio :as a]))
 
+;; TODO
+;; - how to avoid global buffer atom?
+;; - triggering samples with gate
+
+
+(defonce buffers (atom {}))
+
+(defn load-sample
+  "Loads the sample at url and calls buffer-fn with the decoded buffer"
+  [ctx url buffer-fn]
+  (let [request (js/XMLHttpRequest.)
+        onerror (fn [e] (.log js/console (.-err e)))
+        onload #(.decodeAudioData ctx (.-response request) buffer-fn onerror)]
+    (.open request "GET" url true)
+    (set! (.-responseType request) "arraybuffer")
+    (set! (.-onload request) onload)
+    (.send request)))
+
+;; todo: would be cool if this was triggered with a gate
+(defn buffer-node
+  [ctx buffer time]
+  (let [node (.createBufferSource ctx)]
+    (set! (.-buffer node) buffer)
+    (.start node time)
+    node))
+
 (defn test-sample-loop []
   (let [offsets (map #(* 0.25 %) (range 50))
         now (a/now)
