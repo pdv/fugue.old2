@@ -61,8 +61,11 @@
 
 (defn const [& modulators]
   (fn [ctx]
-    (let [const-node (.createConstantSource ctx)]
-      (run! #(modulate % ctx (.-offset const-node)) modulators)
+    (let [const-node (.createConstantSource ctx)
+          param (.-offset const-node)]
+      (set! (.-value param) 0)
+      (doseq [modulator modulators]
+        (modulate modulator ctx param))
       (.start const-node)
       const-node)))
 
@@ -73,6 +76,7 @@
   (fn [ctx]
     (let [in-node ((const in) ctx)
           gain-node (.createGain ctx)]
+      (set! (.-value (.-gain gain-node)) 0)
       (modulate amp ctx (.-gain gain-node))
       (.connect in-node gain-node)
       gain-node)))
@@ -80,9 +84,9 @@
 
 ;; Mix
 
-(def sum const)
+(def + const)
 
-(defn multiply
+(defn *
   ([x y] (gain (const x) (const y)))
   ([x y & more]
    (reduce multiply (multiply x y) more)))

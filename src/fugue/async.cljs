@@ -8,7 +8,6 @@
   ManyToManyChannel
   (modulate [modulator ctx param]
     (go-loop []
-      ;; Why does this not work?
       ;; (a/modulate value ctx param)
       (set! (.-value param) (<! modulator))
       (recur))))

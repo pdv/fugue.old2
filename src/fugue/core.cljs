@@ -20,22 +20,24 @@
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
          gate-chan :gate} (kb/midi->cv midi-chan)
-        env (e/env-gen (e/adsr 0.5, 0.3, 0.0, 1.0) gate-chan)]
+        env (e/env-gen (e/adsr 0.03 0.05 0.8 0.1) gate-chan)
+        f-env (a/+ 20 (a/* env 800))]
     (-> (a/saw hz-chan)
-        (a/gain env))))
+        (a/lpf f-env)
+        (a/gain 0.6))))
 
 ;;; Demo
 
 (defonce ctx (atom nil))
 
 (defn start! []
-  (.log js/console "Starting")
+  (print "Starting")
   (reset! ctx (a/play! (midi-synth (kb/make-kb-midi-chan))))
-  (.log js/console "Started"))
+  (print "Started"))
 
 (defn stop! []
   (.close @ctx)
-  (.log js/console "Stopped"))
+  (print "Stopped"))
 
 (defn- bind-clicks [id cb]
   (-> (.getElementById js/document (clj->js id))
@@ -45,13 +47,4 @@
   (bind-clicks :start start!)
   (bind-clicks :stop stop!))
 
-
 (main)
-
-(comment
-  (defn every-function-ever [dep1 dep2 dep3]
-    (let [foo (fn1 dep1)
-          bar (fn2 dep2)]
-      (fn3! dep3)
-      (+ foo bar)))
-)
