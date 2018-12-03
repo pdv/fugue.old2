@@ -20,11 +20,12 @@
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
          gate-chan :gate} (kb/midi->cv midi-chan)
-        [hz1 hz2] (fasync/fork hz-chan)
+        hz-node (a/const hz-chan)
+        hz-node-forked (memoize hz-node)
         env (e/env-gen (e/perc 0.03 1) gate-chan)
         f-env (a/+ 2 (a/* env 8000))]
-    (-> (a/+ (a/saw hz1)
-             (a/saw (a/* 2.5 hz2)))
+    (-> (a/+ (a/saw hz-node-forked)
+             (a/saw (a/* 2.5 hz-node-forked)))
         (a/lpf f-env)
         (a/gain 0.6))))
 
