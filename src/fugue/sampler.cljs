@@ -5,6 +5,8 @@
 ;; - how to avoid global buffer atom?
 ;; - triggering samples with gate
 
+(comment
+
 
 (defonce buffers (atom {}))
 
@@ -91,3 +93,5 @@
   (doseq [sample samples]
     (a/load-sample sample)))
 
+
+)
