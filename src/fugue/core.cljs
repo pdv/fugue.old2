@@ -5,6 +5,7 @@
             [fugue.async :as fasync]
             [fugue.envelope :as e]
             [fugue.cv :as cv]
+            [fugue.metronome :as m]
             [fugue.keyboard :as kb]))
 
 ;;; Examples
