@@ -4,6 +4,7 @@
             [fugue.audio :as a]
             [fugue.async :as fasync]
             [fugue.envelope :as e]
+            [fugue.cv :as cv]
             [fugue.keyboard :as kb]))
 
 ;;; Examples
@@ -19,7 +20,7 @@
 
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
-         gate-chan :gate} (kb/midi->cv midi-chan)
+         gate-chan :gate} (cv/midi->cv midi-chan)
         hz-node (a/const hz-chan)
         hz-node-forked (memoize hz-node)
         env (e/env-gen (e/perc 0.03 1) gate-chan)
