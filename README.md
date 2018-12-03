@@ -28,12 +28,10 @@ Though development began independently, Fugue and Klangmeister have the same goa
 2. Fugue uses `core.async` for midi. Channels are a natural way to model a midi signal, which is an asynchronous data stream. This makes Fugue especially suited for live performance using midi controllers, interfacing with the Web MIDI API. Midi effects can be defined as transducers, allowing them to operate on different transport mechanisms (sequences, channels, rx chains).
 
 ```clojure
-(defn harp [midi-in]
-  (let [note-chan (:note midi-in)
-        hz-chan (note->hz note-chan)
-        velo-chan (:velo midi-in)]
-    (-> (sin-osc hz-chan)
-        (env-gen (pluck 0.3) gate-chan))))
+(defn midi-synth [midi-chan]
+  (let [{:keys [hz gate]} (midi->cv midi-chan)
+        env (env-gen (adsr 0.03 0.5 0.4 1) gate)]
+    (* (saw hz) env)))
 ```
 
 3. Fugue uses `ConstantSourceNode`. This experimental addition to the Web Audio API allows us to add and multiply signals:
@@ -44,10 +42,8 @@ Though development began independently, Fugue and Klangmeister have the same goa
 With addition and multiplication, we can create complex control signals like lfos and envelopes.
 
 ```clojure
-(defn wobble-bass [note-chan gate-chan wobble-rate-chan]
-  (-> (saw (note->hz note-chan))
-      (env-gen (adsr 0.05 0.1 0.9 0.4) gate-chan)
-      (lpf (lfo 440 wobble-rate-chan))))
+(defn lfo [offset freq amount]
+  (+ offset (* amount (sin-osc freq))))
 ```
 
 As of this writing, `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
