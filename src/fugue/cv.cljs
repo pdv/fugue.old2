@@ -19,13 +19,14 @@
    (map #(/ % 128))))
 
 (defn fork
-  "Returns a list of new channels forked from chan with optional
-  transducers applied"
-  ([chan] (fork chan (map identity)))
-  ([chan xform] (fork chan (map identity) xform))
-  ([chan xform & xforms]
+  "Returns a list of copies of chan with optional xforms applied.
+  1-arity return two new channels mult'ed from chan untransformed.
+  n-arity returns n new channels mult'ed from chan with xforms applied.
+  chan should be considered put-only after calling fork."
+  ([chan] (fork chan (map identity) (map identity)))
+  ([chan & xforms]
    (let [mult (async/mult chan)
-         new-chans (map (partial async/chan 1) (cons xform xforms))]
+         new-chans (map (partial async/chan 1) xforms)]
      (doseq [new-chan new-chans]
        (async/tap mult new-chan))
      new-chans)))
