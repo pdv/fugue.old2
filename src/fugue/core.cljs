@@ -20,7 +20,7 @@
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
          gate-chan :gate} (kb/midi->cv midi-chan)
-        env (e/env-gen (e/adsr 5, 10, 0.1, 1.0) gate-chan)]
+        env (e/env-gen (e/adsr 0.5, 0.3, 0.0, 1.0) gate-chan)]
     (-> (a/saw hz-chan)
         (a/gain env))))
 
@@ -30,7 +30,7 @@
 
 (defn start! []
   (.log js/console "Starting")
-  (a/play! (midi-synth (kb/make-kb-midi-chan)))
+  (reset! ctx (a/play! (midi-synth (kb/make-kb-midi-chan))))
   (.log js/console "Started"))
 
 (defn stop! []

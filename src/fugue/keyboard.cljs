@@ -1,7 +1,6 @@
 (ns fugue.keyboard
   (:require-macros [cljs.core.async :refer [go-loop]])
-  (:require [fugue.audio :as a]
-            [cljs.core.async :as async]))
+  (:require [cljs.core.async :as async]))
 
 (defn note->hz [note]
   (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
