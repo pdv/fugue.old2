@@ -12,11 +12,14 @@
       (set! (.-value param) (async/<! modulator))
       (recur))))
 
-(defn split
-  ([chan] (split chan (map identity) (map identity)))
-  ([chan & xforms]
+(defn fork
+  "Returns a list of new channels forked from chan with optional
+  transducers applied"
+  ([chan] (fork chan (map identity)))
+  ([chan xform] (fork chan (map identity) xform))
+  ([chan xform & xforms]
    (let [mult (async/mult chan)
-         new-chans (map (partial async/chan 1) xforms)]
+         new-chans (map (partial async/chan 1) (cons xform xforms))]
      (doseq [new-chan new-chans]
        (async/tap mult new-chan))
      new-chans)))

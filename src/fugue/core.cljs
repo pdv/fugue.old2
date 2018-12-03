@@ -20,10 +20,9 @@
 (defn midi-synth [midi-chan]
   (let [{hz-chan :hz
          gate-chan :gate} (kb/midi->cv midi-chan)
-        [hz1 hz2] (fasync/split hz-chan)
+        [hz1 hz2] (fasync/fork hz-chan)
         env (e/env-gen (e/perc 0.03 1) gate-chan)
         f-env (a/+ 2 (a/* env 8000))]
-    (print hz1 hz2)
     (-> (a/+ (a/saw hz1)
              (a/saw (a/* 2.5 hz2)))
         (a/lpf f-env)
