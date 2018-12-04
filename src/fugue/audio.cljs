@@ -1,6 +1,7 @@
 (ns fugue.audio
   (:refer-clojure :exclude [+ *])
   (:require [goog.object :as o]
+            [fugue.nodes :as n]
             [fugue.params :refer [param!]]))
 
 ;; Oscillators
@@ -16,10 +17,10 @@
        (.start node)
        node))))
 
-(def sin-osc (partial oscillator :sine))
-(def saw (partial oscillator :sawtooth))
-(def square (partial oscillator :square))
-(def tri-osc (partial oscillator :triangle))
+(def sin-osc (partial n/osc :sine))
+(def saw (partial n/osc :sawtooth))
+(def square (partial n/osc :square))
+(def tri-osc (partial n/osc :triangle))
 
 ;; Filters
 
