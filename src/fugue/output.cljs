@@ -7,7 +7,7 @@
   ([synth-def ctx] (play! synth-def ctx 0))
   ([synth-def ctx at]
    (cljs.pprint/pprint synth-def)
-   (let [node (e/build-node synth-def ctx at)
+   (let [node (e/create-node synth-def ctx at)
          dest (o/get ctx "destination")]
      (.connect node dest)
      ctx)))

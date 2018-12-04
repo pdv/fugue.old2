@@ -26,7 +26,7 @@
   number
   (schedule-event! [this param at]
     (schedule! param this at :cancel))
-  map
+  cljs.core/PersistentArrayMap
   (schedule-event! [this param at]
     (let [{:keys [value time curve]} this]
       (schedule! param value (+ at time) curve))))
@@ -37,4 +37,5 @@
     (go-loop []
       (let [event (async/<! this)
             now (o/get ctx "currentTime")]
-        (schedule-event! event param (+ now at))))))
+        (schedule-event! event param (+ now at))
+        (recur)))))

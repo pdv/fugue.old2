@@ -30,8 +30,3 @@
      (doseq [new-chan new-chans]
        (async/tap mult new-chan))
      new-chans)))
-
-(defn midi->cv [midi-chan]
-  "Splits a midi channel to a hz channel and a gate [0, 1) channel"
-  (let [[hz gate] (fork midi-chan midi-x-hz midi-x-gate)]
-    {:hz hz :gate gate}))

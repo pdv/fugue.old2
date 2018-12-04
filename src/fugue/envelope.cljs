@@ -14,7 +14,7 @@
         {:time (+ time a d) :value (* value s)}}
       #{{:time (+ time r) :value 0}})))
 
-(defn packetize [input]
+(defn packet [input]
   (cond
     (number? input) [{:time 0 :value input}]
     (map? input) [input]
@@ -25,7 +25,7 @@
   [env-fn]
   (comp
    ; make sure the input is a packet of gate events
-   (map packetize)
+   (map packet)
    ; map packets of gate events to packets of schedule events
    (map (partial mapcat env-fn))
    ;; ignore empty packets
