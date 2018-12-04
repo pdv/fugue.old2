@@ -2,7 +2,11 @@
   (:require [cljs.core.async :as async]))
 
 (defn note->hz [note]
-  (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
+  (-> note
+      (- 69)
+      (/ 12)
+      (partial js/Math.pow 2.0)
+      (* 444.0)))
 
 (def midi-x-hz
   (comp
@@ -12,7 +16,7 @@
    (map note->hz)))
 
 (def midi-x-gate
-  "Naive monophonic algorithm"
+  "Naive monophonic algorithm, outputs [0, 1)"
   (comp
    (map :velo)
    (dedupe)

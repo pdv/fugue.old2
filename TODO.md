@@ -1,14 +1,7 @@
 # TODO
 
-### Audio
-- Memoize / fork solidification
-- Samples (using gate?)
-- Polyphonic synth
-- More effects
+- Why the NaNs?
+- Don't cancel if we've got nothing to say
 
-### MIDI
-- External midi in
-- Polyphony algorithms
 
-### App
-- Bootstrapping
+#### SETS

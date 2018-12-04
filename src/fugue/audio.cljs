@@ -1,8 +1,6 @@
 (ns fugue.audio
   (:refer-clojure :exclude [+ *]))
 
-(def node? (partial instance? js/AudioNode))
-
 (defprotocol Modulator
   "Able to modulate an AudioParam. Modulator has to be the first argument, and I wish you didn't have to pass ctx."
   (modulate! [modulator ctx param]))
@@ -18,7 +16,7 @@
   (modulate! [modulator ctx param]
     (.connect modulator param)))
 
-(defn bind-param! [ctx param & modulators]
+(defn set-param! [ctx param & modulators]
   "Attaches modulators to param sequentially"
   (doseq [modulator modulators]
     (modulate! modulator ctx param)))
@@ -31,8 +29,8 @@
    (fn [ctx]
      (let [node (.createOscillator ctx)]
        (set! (.-type node) (clj->js type))
-       (bind-param! ctx (.-frequency node) 0 freq)
-       (bind-param! ctx (.-detune node) 0 detune)
+       (set-param! ctx (.-frequency node) 0 freq)
+       (set-param! ctx (.-detune node) 0 detune)
        (.start node)
        node))))
 
@@ -40,7 +38,6 @@
 (def saw (partial oscillator :sawtooth))
 (def square (partial oscillator :square))
 (def tri-osc (partial oscillator :triangle))
-
 
 ;; Filters
 
@@ -51,8 +48,8 @@
      (let [in-node (in ctx)
            filter-node (.createBiquadFilter ctx)]
        (set! (.-type filter-node) (clj->js type))
-       (bind-param! ctx (.-frequency filter-node) 0 freq)
-       (bind-param! ctx (.-Q filter-node) 1 q)
+       (set-param! ctx (.-frequency filter-node) 0 freq)
+       (set-param! ctx (.-Q filter-node) 1 q)
        (.connect in-node filter-node)
        filter-node))))
 
@@ -60,18 +57,15 @@
 (def hpf (partial biquad-filter :highpass))
 (def bpf (partial biquad-filter :bandpass))
 
-
 ;; ConstantSourceNode
 
 (defn const [& modulators]
   (fn [ctx]
     (let [const-node (.createConstantSource ctx)
           param (.-offset const-node)]
-      (set! (.-value param) 0)
-      (apply bind-param! ctx param (cons 0 modulators))
+      (apply set-param! ctx param (cons 0 modulators))
       (.start const-node)
       const-node)))
-
 
 ;; GainNode
 
@@ -79,10 +73,9 @@
   (fn [ctx]
     (let [in-node ((const in) ctx)
           gain-node (.createGain ctx)]
-      (bind-param! ctx (.-gain gain-node) 0 amp)
+      (set-param! ctx (.-gain gain-node) 0 amp)
       (.connect in-node gain-node)
       gain-node)))
-
 
 ;; Mix
 
@@ -107,4 +100,3 @@
   ([in ctx]
    (.connect (in ctx) (.-destination ctx))
    ctx))
-
