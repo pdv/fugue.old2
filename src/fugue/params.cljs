@@ -24,7 +24,7 @@
   (go-loop []
     (let [input (async/<! chan)
           now (o/get ctx "currentTime")]
-      (print "now" now)
+      (print input "at" now)
       (cond
         (number? input)
         (schedule! param input now :cancel)

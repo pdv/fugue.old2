@@ -18,28 +18,30 @@
 
 (defn packetize [input]
   (cond
-    (number? input) [{:time 0 :value input :curve :instant}]
+    (number? input) [{:time 0 :value input}]
     (map? input) [input]
     (iterable? input) input))
 
 (defn gate-x-sched
   "Returns a transducer that maps gate events to schedule events."
-  [ctx env]
+  [env]
   (comp
-   ; make sure the input is a list of gate events
+   ; make sure the input is a packet of gate events
    (map packetize)
-   ; apply the envelope to each gate event
+   ; map packets of gate events to packets of schedule events
    (map (partial mapcat env))
-   ; flatten the schedule events, first canceling and holding
-   (mapcat (partial cons {:time 0 :curve :cancel}))
+   ;; ignore empty packets
+   (filter not-empty)
+   ;; start each packet with cancel and hold
+   (map (partial cons {:time 0 :curve :cancel}))
+   ;; flatten
+   cat
    ; use an exponential curve by default
-   (map (partial merge {:curve :exponential}))
-   ; convert the relative times to absolute times
-   (map #(update % :time + (.-currentTime ctx)))))
+   (map (partial merge {:curve :exponential}))))
 
 (defn env-gen [env gate-chan]
   (fn [ctx]
-    (let [xform (gate-x-sched ctx env)
+    (let [xform (gate-x-sched env)
           sched-chan (async/chan 1 xform)
           const-node (.createConstantSource ctx)]
       (async/pipe gate-chan sched-chan)
