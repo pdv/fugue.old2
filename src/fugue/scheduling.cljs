@@ -19,20 +19,22 @@
     :instant
     (.setValueAtTime param value time)))
 
-(defn schedule-loop!
-  [modulator param ctx at]
-  (go-loop []
-    (let [input (async/<! chan)
-          now (o/get ctx "currentTime")]
-      (cond
-        (number? input)
-        (schedule! param input now :cancel)
-        (map? input)
-        (let [{:keys [value time curve]} input]
-          (schedule! param value (+ at now time) curve)))
-      (recur))))
+(defprotocol ScheduleEvent
+  (schedule-event! [this param at]))
+
+(extend-protocol ScheduleEvent
+  number
+  (schedule-event! [this param at]
+    (schedule! param this at :cancel))
+  map
+  (schedule-event! [this param at]
+    (let [{:keys [value time curve]} this]
+      (schedule! param value (+ at time) curve))))
 
 (extend-protocol Modulator
   ManyToManyChannel
-  (attach! [modulator param ctx at]
-    (schedule-loop! modulator param ctx at)))
+  (attach! [this param ctx at]
+    (go-loop []
+      (let [event (async/<! this)
+            now (o/get ctx "currentTime")]
+        (schedule-event! event param (+ now at))))))

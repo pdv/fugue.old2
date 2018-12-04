@@ -2,7 +2,7 @@
   (:require [goog.object :as o]))
 
 (defprotocol Modulator
-  (attach! [modulator param ctx at]))
+  (attach! [this param ctx at]))
 
 (defn build-node
   "Returns the AudioNode defined by the provided def starting at at"
@@ -21,9 +21,17 @@
 
 (extend-protocol Modulator
   number
-  (attach! [modulator param ctx at]
-    (o/set param "value" modulator))
+  (attach! [this param ctx at]
+    (o/set param "value" this))
   map
-  (attach! [modulator param ctx at]
-    (.connect (build-node modulator ctx at) param)))
+  (attach! [this param ctx at]
+    (.connect (build-node this ctx at) param)))
 
+(defn play!
+  ([synth-def] (play! synth-def (js/AudioContext.)))
+  ([synth-def ctx] (play! synth-def ctx 0))
+  ([synth-def ctx at]
+   (cljs.pprint/pprint synth-def)
+   (let [node (build-node synth-def ctx at)
+         dest (o/get ctx "destination")]
+     (.connect node dest))))

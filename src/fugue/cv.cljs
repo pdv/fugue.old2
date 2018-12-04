@@ -22,7 +22,7 @@
   "Returns a list of copies of chan with optional xforms applied.
   1-arity return two new channels mult'ed from chan untransformed.
   n-arity returns n new channels mult'ed from chan with xforms applied.
-  chan should be considered put-only after calling fork."
+  Do not read from chan after calling this."
   ([chan] (fork chan (map identity) (map identity)))
   ([chan & xforms]
    (let [mult (async/mult chan)

@@ -20,14 +20,14 @@
     (map? input) [input]
     (iterable? input) input))
 
-(defn gate-x-sched
+(defn env
   "Returns a transducer that maps gate events to schedule events."
-  [env]
+  [env-fn]
   (comp
    ; make sure the input is a packet of gate events
    (map packetize)
    ; map packets of gate events to packets of schedule events
-   (map (partial mapcat env))
+   (map (partial mapcat env-fn))
    ;; ignore empty packets
    (filter not-empty)
    ;; start each packet with cancel and hold
