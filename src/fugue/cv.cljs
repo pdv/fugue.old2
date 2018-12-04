@@ -2,11 +2,7 @@
   (:require [cljs.core.async :as async]))
 
 (defn note->hz [note]
-  (->> note
-       (+ -69)
-       (/ 12)
-       (js/Math.pow 2.0)
-       (* 444.0)))
+  (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
 
 (def midi-x-hz
   (comp

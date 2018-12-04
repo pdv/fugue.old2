@@ -1,6 +1,6 @@
 (ns fugue.envelope
   (:require [cljs.core.async :as async]
-            [fugue.params :as p]))
+            [fugue.audio :as a]))
 
 (defn perc [a d]
   (fn [{:keys [time value]}]
@@ -40,12 +40,8 @@
    (map (partial merge {:curve :exponential}))))
 
 (defn env-gen [env gate-chan]
-  (fn [ctx]
-    (let [xform (gate-x-sched env)
-          sched-chan (async/chan 1 xform)
-          const-node (.createConstantSource ctx)]
-      (async/pipe gate-chan sched-chan)
-      (p/param! const-node "offset" 0.0001 sched-chan)
-      (.start const-node)
-      const-node)))
+  (let [xform (gate-x-sched env)
+        sched-chan (async/chan 1 xform)]
+    (async/pipe gate-chan sched-chan)
+    (a/+ 0.0001 sched-chan)))
 
