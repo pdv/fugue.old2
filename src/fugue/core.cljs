@@ -2,7 +2,6 @@
   (:require-macros [cljs.core.async :refer [go]])
   (:require [cljs.core.async :as async :refer [<!]]
             [fugue.audio :as a]
-            [fugue.async :as fasync]
             [fugue.envelope :as e]
             [fugue.cv :as cv]
             [fugue.metronome :as m]

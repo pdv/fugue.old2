@@ -1,35 +1,34 @@
 (ns fugue.envelope
   (:require [cljs.core.async :as async]
-            [fugue.audio :as a]
-            [fugue.async :as fasync]))
+            [fugue.params :as p]))
 
 (defn perc-simple [a d]
   (fn [open]
     (if open
-      [{:time a :value 1}
-       {:time (+ a d) :value 0}]
-      [])))
+      #{{:time a :value 1}
+        {:time (+ a d) :value 0}}
+      #{})))
 
 (defn adsr-simple [a d s r]
   (fn [open]
     (if open
-      [{:time a :value 1}
-       {:time (+ a d) :value s}]
-      [{:time r :value 0}])))
+      #{{:time a :value 1}
+        {:time (+ a d) :value s}}
+      #{{:time r :value 0}})))
 
 (defn perc [a d]
   (fn [{:keys [time value]}]
     (if (> value 0)
-      [{:time (+ time a) :value value}
-       {:time (+ time a d) :value 0}]
-      [])))
+      #{{:time (+ time a) :value value}
+        {:time (+ time a d) :value 0}}
+      #{})))
 
 (defn adsr [a d s r]
   (fn [{:keys [time value]}]
     (if (> value 0)
-      [{:time (+ time a) :value value}
-       {:time (+ time a d) :value (* value s)}]
-      [{:time (+ time r) :value 0}])))
+      #{{:time (+ time a) :value value}
+        {:time (+ time a d) :value (* value s)}}
+      #{{:time (+ time r) :value 0}})))
 
 (defn packetize [input]
   (cond
@@ -56,10 +55,9 @@
   (fn [ctx]
     (let [xform (gate-x-sched ctx env)
           sched-chan (async/chan 1 xform)
-          const-node (.createConstantSource ctx)
-          param (.-offset const-node)]
+          const-node (.createConstantSource ctx)]
       (async/pipe gate-chan sched-chan)
-      (a/set-param! ctx param 0.0001 sched-chan)
+      (p/param! const-node "offset" 0.0001 sched-chan)
       (.start const-node)
       const-node)))
 
