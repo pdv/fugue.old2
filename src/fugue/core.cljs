@@ -1,5 +1,5 @@
 (ns fugue.core
-  (:require-macros [cljs.core.async :refer [go]])
+  (:require-macros [cljs.core.async :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [<!]]
             [fugue.audio :as a]
             [fugue.envelope :as e]

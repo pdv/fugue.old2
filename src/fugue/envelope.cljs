@@ -2,20 +2,6 @@
   (:require [cljs.core.async :as async]
             [fugue.params :as p]))
 
-(defn perc-simple [a d]
-  (fn [open]
-    (if open
-      #{{:time a :value 1}
-        {:time (+ a d) :value 0}}
-      #{})))
-
-(defn adsr-simple [a d s r]
-  (fn [open]
-    (if open
-      #{{:time a :value 1}
-        {:time (+ a d) :value s}}
-      #{{:time r :value 0}})))
-
 (defn perc [a d]
   (fn [{:keys [time value]}]
     (if (> value 0)

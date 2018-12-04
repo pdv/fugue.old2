@@ -6,7 +6,7 @@
 
 (defn schedule!
   [param value time curve]
-  (print "scheduling:" value time curve)
+  (print "scheduling" value time curve)
   (case curve
     :cancel
     (let [value (or value (.-value param))]
@@ -24,12 +24,14 @@
   (go-loop []
     (let [input (async/<! chan)
           now (o/get ctx "currentTime")]
+      (print "now" now)
       (cond
         (number? input)
         (schedule! param input now :cancel)
         (map? input)
         (let [{:keys [value time curve]} input]
-          (schedule! param value (+ now time) curve))))))
+          (schedule! param value (+ now time) curve)))
+      (recur))))
 
 (defprotocol Modulator
   "Able to modulate an AudioParam. Modulator has to be the first argument, and I wish you didn't have to pass ctx."
