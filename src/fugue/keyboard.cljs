@@ -13,7 +13,7 @@
   ([] (keypress-x-midi 4))
   ([octave]
    (fn [rf]
-     (let [voctave (volatile! 0)]
+     (let [voctave (volatile! (- octave 4))]
        (fn
          ([] (rf))
          ([result] (rf result))
@@ -30,9 +30,11 @@
                 (vswap! voctave (case key "z" dec "x" inc identity))
                 result)))))))))
 
-(defn make-kb-midi-chan []
-  (let [c (async/chan 1 (keypress-x-midi))]
-    (doseq [type ["keydown" "keyup"]]
-      (.addEventListener js/document type (partial async/put! c)))
-    c))
+(defn kb-midi-chan
+  ([] (kb-midi-chan 3))
+  ([octave]
+    (let [c (async/chan 1 (keypress-x-midi octave))]
+      (doseq [type ["keydown" "keyup"]]
+        (.addEventListener js/document type (partial async/put! c)))
+    c)))
 

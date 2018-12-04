@@ -1,5 +1,6 @@
 (ns fugue.core
-  (:require-macros [cljs.core.async :refer [go go-loop]])
+  (:require-macros [cljs.core.async
+                    :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [<!]]
             [fugue.audio :as a]
             [fugue.envelope :as e]
@@ -19,10 +20,9 @@
       (a/hpf 990 2.0)))
 
 (defn midi-synth [midi-chan]
-  (let [{hz-chan :hz
-         gate-chan :gate} (cv/midi->cv midi-chan)
-        [hz1 hz2] (cv/fork hz-chan)
-        env (e/env-gen (e/adsr 0.03 0.3 0.5 0.3) gate-chan)
+  (let [{:keys [hz gate]} (cv/midi->cv midi-chan)
+        [hz1 hz2] (cv/fork hz)
+        env (e/env-gen (e/adsr 0.03 0.3 0.5 0.3) gate)
         f-env (a/+ 2 (a/* env 8000))]
     (-> (a/+ (a/saw hz1)
              (a/saw (a/* 2.5 hz2)))
@@ -35,7 +35,7 @@
 
 (defn start! []
   (print "Starting")
-  (reset! ctx (a/play! (midi-synth (kb/make-kb-midi-chan))))
+  (reset! ctx (a/play! (midi-synth (kb/kb-midi-chan))))
   (print "Started"))
 
 (defn stop! []

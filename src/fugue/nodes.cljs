@@ -5,15 +5,12 @@
 (defn source-node
   [{:keys [constructor static-params params] :as input}]
   (fn [ctx]
-    (print input)
     (let [node (constructor ctx)]
       (doseq [[name value] static-params]
-        (print "setting" name "to" value)
         (o/set node (clj->js name) (clj->js value)))
       (doseq [[name modulators] params
               :let [param (o/get node (clj->js name))]
               modulator modulators]
-        (print "attaching" modulator "to" name)
         (p/attach! modulator ctx param))
       (.start node)
       node)))
