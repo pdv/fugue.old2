@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async
                     :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [<!]]
-            [fugue.audio :as a]
+            [fugue.nodes :as a]
             [fugue.envelope :as e]
             [fugue.cv :as cv]
             [fugue.metronome :as m]
@@ -29,13 +29,17 @@
         (a/lpf f-env)
         (a/gain 0.6))))
 
+(defn basic-synth []
+  (-> (a/saw 440)
+      (a/lpf 22)))
+
 ;;; Demo
 
 (defonce ctx (atom nil))
 
 (defn start! []
   (print "Starting")
-  (reset! ctx (a/play! (midi-synth (kb/kb-midi-chan))))
+  (a/play! (basic-synth))
   (print "Started"))
 
 (defn stop! []
