@@ -6,7 +6,6 @@
 
 (defn schedule!
   [param value time curve]
-  (print "scheduling" value time curve)
   (case curve
     :cancel
     (let [value (or value (.-value param))]
@@ -24,7 +23,6 @@
   (go-loop []
     (let [input (async/<! chan)
           now (o/get ctx "currentTime")]
-      (print input "at" now)
       (cond
         (number? input)
         (schedule! param input now :cancel)

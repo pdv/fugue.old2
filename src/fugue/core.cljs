@@ -22,7 +22,7 @@
   (let [{hz-chan :hz
          gate-chan :gate} (cv/midi->cv midi-chan)
         [hz1 hz2] (cv/fork hz-chan)
-        env (e/env-gen (e/perc 0.03 1) gate-chan)
+        env (e/env-gen (e/adsr 0.03 0.3 0.5 0.3) gate-chan)
         f-env (a/+ 2 (a/* env 8000))]
     (-> (a/+ (a/saw hz1)
              (a/saw (a/* 2.5 hz2)))
