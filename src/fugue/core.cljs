@@ -6,7 +6,8 @@
             [fugue.envelope :as e]
             [fugue.cv :as cv]
             [fugue.metronome :as m]
-            [fugue.keyboard :as kb]))
+            [fugue.keyboard :as kb]
+            [fugue.output :as out]))
 
 ;;; Examples
 
@@ -19,6 +20,7 @@
       (a/lpf 440 1.2)
       (a/hpf 990 2.0)))
 
+(comment
 (defn midi-synth [midi-chan]
   (let [{:keys [hz gate]} (cv/midi->cv midi-chan)
         [hz1 hz2] (cv/fork hz)
@@ -28,10 +30,11 @@
              (a/saw (a/* 2.5 hz2)))
         (a/lpf f-env)
         (a/gain 0.6))))
+)
 
 (defn basic-synth []
   (-> (a/saw 440)
-      (a/lpf 22)))
+      (a/lpf 220)))
 
 ;;; Demo
 
@@ -39,7 +42,7 @@
 
 (defn start! []
   (print "Starting")
-  (a/play! (basic-synth))
+  (reset! ctx (out/play! (basic-synth)))
   (print "Started"))
 
 (defn stop! []

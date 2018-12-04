@@ -1,6 +1,4 @@
-(ns fugue.envelope
-  (:require [cljs.core.async :as async]
-            [fugue.audio :as a]))
+(ns fugue.envelope)
 
 (defn perc [a d]
   (fn [{:keys [time value]}]
@@ -38,10 +36,4 @@
    cat
    ; use an exponential curve by default
    (map (partial merge {:curve :exponential}))))
-
-(defn env-gen [env gate-chan]
-  (let [xform (gate-x-sched env)
-        sched-chan (async/chan 1 xform)]
-    (async/pipe gate-chan sched-chan)
-    (a/+ 0.0001 sched-chan)))
 
