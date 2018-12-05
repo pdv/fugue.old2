@@ -2,7 +2,7 @@
 
 - "[Overtone](https://github.com/overtone/overtone) on the web"
 - A Clojurescript library for web midi and audio
-- A live music programming environment in the browser
+- *Soon: A self-hosted live music programming environment in the browser*
 
 #### Modeling synthesis with function composition
 ```clojure
@@ -46,8 +46,8 @@
   (f/+ offset (f/* amount (f/sin-osc freq))))
 ```
 - `f/+` creates a `ConstantSourceNode` synthdef and modulates the `offset` parameter with its arguments
-- `f/*` puts a `CSN` through a `GainNode` synthdef for each argument and modulates the `gain` parameter with them
-- `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
+- `f/*` puts a `CSN` through a series of `GainNode` synthdefs with `gain` set to the arguments
+- `ConstantSourceNode` is currently only available in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
 
 ### See also
 
