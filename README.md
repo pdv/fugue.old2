@@ -19,7 +19,7 @@
       (f/reverb :hall)
       (f/pan (f/sin-osc 0.2))))
 
-(-> synth effect a/eval a/out!)
+(-> synth effect f/eval f/out!)
 ```
 - Sources like `saw`, `lfo`, and `sample` each return an immutable data structure ("synthdef") representing an audio graph
 - Effects like `lpf` and `pan` are pure functions that take a synthdef as their first argument and return a synthdef
