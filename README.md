@@ -42,7 +42,7 @@
 
 (-> (midi-synth (create-querty-midi-chan)) a/eval a/out!)
 ```
-- `f/querty->midi` is a stateful transducer: 'a' is C, 'w' is C#, etc.; 'z' lowers the octave, and 'x' raises it
+- `f/querty->midi` returns a stateful transducer: 'a' is C, 'w' is C#, etc.; 'z' lowers the octave, 'x' raises it
 - Midi effects like arpeggiators and scale correctors are midi->midi transducers
 - Note priority algorithms are stateful transducers that map midi events to frequency and gate "control voltages"
 - Envelopes are transducers that mapcat gate signals to parameter ramps
