@@ -14,7 +14,7 @@
       (.setValueAtTime param value time))
     :linear
     (.linearRampToValueAtTime param value time)
-    :exponential
+    (:exponential nil)
     (.exponentialRampToValueAtTime param (max 0.0001 value) time)
     :instant
     (.setValueAtTime param value time)))
@@ -32,6 +32,11 @@
       (schedule! param value (+ at time) curve))))
 
 (extend-protocol Modulator
+  cljs.core/PersistentVector
+  (attach! [this param ctx at]
+    (doseq [event this
+            :let [now (o/get ctx "currentTime")]]
+      (schedule-event! event param (+ now at))))
   ManyToManyChannel
   (attach! [this param ctx at]
     (go-loop []

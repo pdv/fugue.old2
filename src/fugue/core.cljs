@@ -26,6 +26,22 @@
    cv/midi-x-gate
    (e/env env-fn)))
 
+(defn four-on-floor
+  "Returns a lazy sequence of {:time :value}"
+  [bpm value]
+  (let [nome (m/metronome bpm)]
+    (map #(into {} {:time % :value value}) (nome))))
+
+(defn play-repeated-pluck! [bpm]
+  (let [gate (take 30 (four-on-floor bpm 1))
+        env-fn (e/perc 0.03 0.03)
+        env (into [] (mapcat env-fn) gate)
+        filter-env (a/+ 2 (a/* env 8000))]
+    (-> (a/+ (a/saw 220)
+             (a/saw 440))
+        (a/lpf filter-env)
+        (out/play!))))
+
 (defn play-midi-synth! [midi-chan]
   (let [[hz gate] (cv/fork midi-chan cv/midi-x-hz cv/midi-x-gate)
         [hz1 hz2] (cv/fork hz)
@@ -47,6 +63,7 @@
 
 (defn start! []
   (print "Starting")
+;  (reset! ctx (play-repeated-pluck! 120))
   (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
   (print "Started"))
 
