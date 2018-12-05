@@ -8,10 +8,9 @@
 ```clojure
 (use '[fugue.live :as f])
 
-(def synth [freq]
-  (-> (f/+ (f/saw freq)
-           (f/saw (* 2 freq)))
-      (f/lpf 880 1.3)
+(def synth
+  (-> (f/+ (f/saw 440)
+           (f/saw 880))
       (f/gain 0.6)))
 
 (defn effect [in]
@@ -20,7 +19,7 @@
       (f/reverb :hall)
       (f/pan (f/sin-osc 0.2))))
 
-(-> synth effect a/eval a/out!)
+(-> (synth effect a/eval a/out!))
 ```
 - Sources like `saw`, `lfo`, and `sample` each return an immutable data structure ("synthdef") representing an audio graph
 - Effects like `lpf` and `pan` are pure functions that take a synthdef as their first argument and return a synthdef
