@@ -23,7 +23,7 @@
 (-> synth effect a/eval a/out!)
 ```
 - Sources like `saw`, `lfo`, and `sample` each return an immutable data structure ("synthdef") representing an audio graph
-- Effects like `lpf` and `pan` are pure functions on synthdefs
+- Effects like `lpf` and `pan` are pure functions that take a synthdef as their first argument and return a synthdef
 - The `AudioParam` arguments to synthdef-returning functions can be anything that satisfies `fugue.param.Modulator`
 - `f/eval` creates an `AudioNode` from a synthdef
 - `f/out!` connects an `AudioNode` to the browser's output ("!" means loud)
@@ -31,22 +31,23 @@
 #### Using transducers (and, optionally, `core.async`) to transform musical events
 ```clojure
 (defn midi-synth [midi-chan]
-  (let [[hz-chan gate-chan] (cv/mono midi-chan)]
-    (* (saw hz-chan) 
-       (env-gen (adsr 0.03 0.5 0.4 1) gate-chan))))
+  (let [[hz-chan gate-chan] (f/mono midi-chan)]
+    (* (f/saw hz-chan) 
+       (f/env-gen (f/adsr 0.03 0.5 0.4 1) gate-chan))))
 ```
-The same transducers can be applied to "live" (chans, rx, callbacks) and "written" (collections, iterables) transport mechanisms. Channels are a useful way to model a live midi signal, and transducers are a natural way to transform them:
-- qwerty keyboard events can be mapped to midi events: "a" is C, "w" is C#, etc.; 'z' lowers the octave, and 'x' raises the octave. This is a stateful transducer, because it needs to track the octave
-- midi effects like arpeggiators and scale-correctors are midi->midi transducers
-- Synthesizer note priority algorithms can be modeled using stateful transducers that transform midi events into frequency and gate "control voltages"
+- `querty->midi` is a stateful transducer: 'a' is C, 'w' is C#, etc.; 'z' lowers the octave, and 'x' raises it
+- Midi effects like arpeggiators and scale correctors are midi->midi transducers
+- Note priority algorithms are stateful transducers that map midi events to frequency and gate "control voltages"
 - Envelopes are transducers that mapcat gate signals to parameter ramps
 
 #### Combining and modulating signals with `ConstantSourceNode`
 ```clojure
 (defn lfo [offset freq amount]
-  (+ offset (* amount (sin-osc freq))))
+  (f/+ offset (f/* amount (f/sin-osc freq))))
 ```
-The experimental `ConstantSourceNode` allows us to combine and modulate signals in ways that were previously unavailable. As of this writing, `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available, which is included in the example.
+- `f/+` creates a `ConstantSourceNode` synthdef and modulates the `offset` parameter with its arguments
+- `f/*` puts a `CSN` through a `GainNode` synthdef for each argument and modulates the `gain` parameter with them
+- `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
 
 ### See also
 
