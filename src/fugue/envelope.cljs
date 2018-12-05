@@ -37,3 +37,36 @@
    ; use an exponential curve by default
    (map (partial merge {:curve :exponential}))))
 
+
+(comment
+
+  ;; notes
+  [{:note :c4 :time "0.0.0" :duration 1/2 :velo 1}]
+
+  ;; midi events
+  [{:type :note-on :note 60 :velo 127 :time 0}
+   {:type :note-off :note 60 :velo 0 :time 2}]
+
+  ;; gate values
+  [{:time 0 :value 1}
+   {:time 2 :value 0}]
+
+  ;; parameter curves
+  [
+   ;; opening
+   {:start 0.0 :target 1 :duration 0.03 :curve :exp}
+   {:start 0.3 :target 0.8 :duration 0.06 :curve :exp}
+
+   ;; closing
+   {:start 2 :target 0 :duration 0.03 :curve :exp}
+  ]
+
+  ;; scheduler values
+  [{:time 0 :curve :hold}
+   {:time 0.3 :value 1 :curve :exp}
+   {:time 0.3 :curve :hold}
+   {:time 0.9 :value :0.8 :curve :exp}
+   {:time 2 :curve :hold}
+   {:time 2.03 :value 0 :curve :exp}]
+
+   )
