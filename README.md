@@ -19,7 +19,7 @@
       (f/reverb :hall)
       (f/pan (f/sin-osc 0.2))))
 
-(-> (synth effect a/eval a/out!))
+(-> synth effect a/eval a/out!)
 ```
 - Sources like `saw`, `lfo`, and `sample` each return an immutable data structure ("synthdef") representing an audio graph
 - Effects like `lpf` and `pan` are pure functions that take a synthdef as their first argument and return a synthdef
@@ -51,9 +51,11 @@
 ### See also
 
 - [Overtone](https://github.com/overtone/overtone)
-Fugue's API is closely modeled from Overtone. The differences are primarily in the approaches to parameter modulation and the engine on which they are implemented.
+
+  Fugue's API is closely modeled from Overtone. The differences are primarily in the approaches to parameter modulation and the engine on which they are implemented.
 - [klangmeister](https://github.com/ctford/klangmeister) / [cljs-bach](https://github.com/ctford/cljs-bach)
-Though development began independently, Fugue and Klangmeister have the same goal: an Overtone-like music programming environment in the browser. Klangmeister has been an inspiration for Fugue, but ultimately the APIs are incompatible.
+
+  Though development began independently, Fugue and Klangmeister have the same goal: an Overtone-like music programming environment in the browser. Klangmeister's implementation has been a huge inspiration for Fugue, but ultimately the APIs are incompatible.
 
 ## Usage
 
