@@ -2,59 +2,68 @@
 
 - "[Overtone](https://github.com/overtone/overtone) on the web"
 - A Clojurescript library for web midi and audio
-- A live music programming environment in the browser
+- *Soon: A self-hosted live music programming environment in the browser*
 
-### Comparison to [klangmeister](https://github.com/ctford/klangmeister) / [cljs-bach](https://github.com/ctford/cljs-bach)
-
-Though development began independently, Fugue and Klangmeister have the same goal: an Overtone-like music programming environment in the browser. Fugue has adpoted Klangmeister's approach to nodes (defining them as `AudioContext, start time -> AudioNode` functions), but has a few important differences:
-
-#### Fugue adopts Overtone's approach of treating filters and other audio effects as functions of audio sources.
-This allows traditional function composition techniques (especially the `->` macro) to be used to create chains:
+#### Modeling synthesis with function composition
 ```clojure
+(use '[fugue.live :as f])
+
 (def synth
-  (-> (sin-osc 440)
-      (lpf 880 1.3)))
+  (-> (f/+ (f/saw 440)
+           (f/saw 880))
+      (f/gain 0.6)))
 
-(defn effects [in]
+(defn effect [in]
   (-> in
-      (lpf (lfo 200 0.7) 1.2)
-      (reverb :hall)
-      (pan (sin-osc 0.2))
-      (hpf 990 2.0)))
+      (f/lpf (f/+ 440 (f/lfo 200 0.7)) 1.2)
+      (f/reverb :hall)
+      (f/pan (f/sin-osc 0.2))))
 
-(defn play-synth! []
-  (-> synth effects play!))
+(-> synth effect f/eval f/out!)
 ```
-Under the hood, AudioNode functions like `saw` and `filter` return a data structure that represents the audio graph and isn't created until you call `play!`, which assembles and starts your synth using an `AudioContext` that it creates or you provide now or at a time that you provide. The `AudioParam` arguments (osc frequency, gain amount) can be anything that satisfies the `fugue.engine.Modulator` protocol, like a number, another node, a sequence of scheduler values, or an async source like a channel or an observable.
+- Sources like `saw`, `lfo`, and `sample` each return an immutable data structure ("synthdef") representing an audio graph
+- Effects like `lpf` and `pan` are pure functions that take a synthdef as their first argument and return a synthdef
+- The `AudioParam` arguments to synthdef-returning functions can be anything that satisfies `fugue.param.Modulator`
+- `f/eval` creates an `AudioNode` from a synthdef
+- `f/out!` connects an `AudioNode` to the browser's output ("!" means loud)
 
-#### Fugue uses `ConstantSourceNode` to combine signals
-This experimental addition to the Web Audio API allows us to add and multiply signals:
-- Adding signals is accomplished attaching them each to a CSN's `offset` after setting it to 0.
-- Multiplying a pair of signals is done by attaching the first to a `GainNode` whose `gain` is modulated by the second.
-With addition and multiplication, we can create complex control signals like lfos and envelopes.
-```clojure
-(defn lfo [offset freq amount]
-  (+ offset (* amount (sin-osc freq))))
-```
-
-As of this writing, `ConstantSourceNode` is only avaiable in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available, which is included in the example.
-
-
-#### Fugue uses transducers (and, optionally, `core.async`) for midi.
-The same transducers can be applied to live (chans, rx, callbacks) and "written" (colls) midi signals. Channels are a natural way to model a live midi signal, and transducers are a natural way to transform them:
-- qwerty keyboard events can be mapped to midi events: "a" is C, "w" is C#, etc.; 'z' lowers the octave, and 'x' raises the octave. This is a stateful transducer, because it needs to track the octave
-- midi effects like arpeggiators and scale-correctors are midi->midi transducers
-- Synthesizer note priority algorithms can be modeled using stateful transducers that transform midi events into frequency and gate "control voltages"
-- Envelopes are transducers that mapcat gate signals to parameter ramps
-
-With fugue, these signals can be used to modulate parameters, in real time or by scheduling.
-
+#### Using transducers (and, optionally, `core.async`) to transform musical events
 ```clojure
 (defn midi-synth [midi-chan]
-  (let [[hz-chan gate-chan] (cv/mono midi-chan)]
-    (* (saw hz-chan) 
-       (env-gen (adsr 0.03 0.5 0.4 1) gate-chan))))
+  (let [[hz-chan gate-chan] (f/monophonic midi-chan)]
+    (* (f/saw hz-chan) 
+       (f/env-gen (f/adsr 0.03 0.5 0.4 1) gate-chan))))
+
+(defn create-querty-midi-chan []
+  (let [c (async/chan 1 (f/querty->midi))]
+    (doseq [type ["keydown" "keyup"]]
+      (.addEventListener js/document type (partial async/put! c)))
+    c))
+
+(-> (midi-synth (create-querty-midi-chan)) a/eval a/out!)
 ```
+- `f/querty->midi` returns a stateful transducer: 'a' is C, 'w' is C#, etc.; 'z' lowers the octave, 'x' raises it
+- Midi effects like arpeggiators and scale correctors are midi->midi transducers
+- Note priority algorithms are stateful transducers that map midi events to frequency and gate "control voltages"
+- Envelopes are transducers that mapcat gate signals to parameter ramps
+
+#### Combining and modulating signals with `ConstantSourceNode`
+```clojure
+(defn lfo [offset freq amount]
+  (f/+ offset (f/* amount (f/sin-osc freq))))
+```
+- `f/+` creates a `ConstantSourceNode` synthdef and modulates the `offset` parameter with its arguments
+- `f/*` puts a `CSN` through a series of `GainNode` synthdefs with `gain` set to the arguments
+- `ConstantSourceNode` is currently only available in Firefox, but there is a [polyfill](https://github.com/mohayonao/constant-source-node) available.
+
+### See also
+
+- [Overtone](https://github.com/overtone/overtone)
+
+  Fugue's API is closely modeled from Overtone. The differences are primarily in the approaches to parameter modulation and the engine on which they are implemented.
+- [klangmeister](https://github.com/ctford/klangmeister) / [cljs-bach](https://github.com/ctford/cljs-bach)
+
+  Though development began independently, Fugue and Klangmeister have the same goal: an Overtone-like music programming environment in the browser. Klangmeister's implementation has been a huge inspiration for Fugue, but ultimately the APIs are incompatible.
 
 ## Usage
 
@@ -65,7 +74,7 @@ lein figwheel
 
 ## License
 
-Copyright © 2018 Phil Del Vecchio
+Copyright © 2016-2018 Phil Del Vecchio
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
