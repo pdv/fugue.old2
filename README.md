@@ -30,11 +30,19 @@
 #### Using transducers (and, optionally, `core.async`) to transform musical events
 ```clojure
 (defn midi-synth [midi-chan]
-  (let [[hz-chan gate-chan] (f/mono midi-chan)]
+  (let [[hz-chan gate-chan] (f/monophonic midi-chan)]
     (* (f/saw hz-chan) 
        (f/env-gen (f/adsr 0.03 0.5 0.4 1) gate-chan))))
+
+(defn create-querty-midi-chan []
+  (let [c (async/chan 1 (f/querty->midi))]
+    (doseq [type ["keydown" "keyup"]]
+      (.addEventListener js/document type (partial async/put! c)))
+    c))
+
+(-> (midi-synth (create-querty-midi-chan)) a/eval a/out!)
 ```
-- `querty->midi` is a stateful transducer: 'a' is C, 'w' is C#, etc.; 'z' lowers the octave, and 'x' raises it
+- `f/querty->midi` is a stateful transducer: 'a' is C, 'w' is C#, etc.; 'z' lowers the octave, and 'x' raises it
 - Midi effects like arpeggiators and scale correctors are midi->midi transducers
 - Note priority algorithms are stateful transducers that map midi events to frequency and gate "control voltages"
 - Envelopes are transducers that mapcat gate signals to parameter ramps
