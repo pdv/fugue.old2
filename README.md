@@ -22,15 +22,11 @@
 
 (-> synth effect a/eval a/out!)
 ```
-- Sources like oscillators (`sin-osc`, `saw`, etc.) return a data structure ("synthdef") representing an audio graph
-- Effects like filters (`lpf`, `hpf`, etc.) are pure functions on synthdefs 
-- `f/eval` creates an `AudioNode` from a synthdef<br/>
-  - using an `AudioContext` that you can provide, starting at a time that you can provide
-- `f/out!` connects an `AudioNode` to the browser's output<br/>
-  - An exclamation mark means things might get loud.
-- The arguments to audio functions can be anything that satisfies the fugue.param.Modulator protocol
-  - including other synthdefs, and sources of parameter curves
-
+- Sources like `saw`, `lfo`, and `sample` each return an immutable data structure ("synthdef") representing an audio graph
+- Effects like `lpf` and `pan` are pure functions on synthdefs
+- The `AudioParam` arguments to synthdef-returning functions can be anything that satisfies `fugue.param.Modulator`
+- `f/eval` creates an `AudioNode` from a synthdef
+- `f/out!` connects an `AudioNode` to the browser's output ("!" means loud)
 
 #### Using transducers (and, optionally, `core.async`) to transform musical events
 ```clojure
