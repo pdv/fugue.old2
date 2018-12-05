@@ -65,7 +65,7 @@ lein figwheel
 
 ## License
 
-Copyright © 2018 Phil Del Vecchio
+Copyright © 2016-2018 Phil Del Vecchio
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
