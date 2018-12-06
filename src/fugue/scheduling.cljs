@@ -5,16 +5,20 @@
             [goog.object :as o]
             [fugue.engine :refer [Modulator]]))
 
+;; `cancelScheduledValues` will abort a ramp that's in-progress
+;; which is hella annoying
+;; `cancelAndHold` will not, hopefully
+
+;; The behavior of the timeline in the face of cancelAndHoldAtTime() when automations are running and can be introduced at any time after calling cancelAndHoldAtTime() and before cancelTime is reached is quite complicated.
+
 (defn schedule!
   [param value time curve]
   (case curve
-    :cancel
-    (let [value (or value (.-value param))]
-      (.cancelScheduledValues param time)
-      (.setValueAtTime param value time))
-    :linear
+    :cancel-and-hold
+    (.cancelAndHoldAtTime param time)
+    (:linear nil)
     (.linearRampToValueAtTime param value time)
-    (:exponential nil)
+    :exponential
     (.exponentialRampToValueAtTime param (max 0.0001 value) time)
     :instant
     (.setValueAtTime param value time)))
@@ -25,7 +29,7 @@
 (extend-protocol ScheduleEvent
   number
   (schedule-event! [this param at]
-    (schedule! param this at :cancel))
+    (schedule! param this at :cancel-and-hold))
   cljs.core/PersistentArrayMap
   (schedule-event! [this param at]
     (let [{:keys [value time curve]} this]
