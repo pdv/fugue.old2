@@ -6,7 +6,7 @@
             [fugue.engine :refer [Modulator]]))
 
 (defn- schedule!
-  [param value time shape]
+  [param {:keys [value time shape]}]
   (print "scheduling" time ":" value shape)
   (case shape
     :cancel-and-hold
@@ -18,28 +18,49 @@
     :instant
     (.setValueAtTime param value time)))
 
-(defprotocol Schedulable
-  (schedule! [this param at]))
+(defn- curve-x-schedule
+  "Returns a stateful transducer that maps curves to schedulables using now-fn"
+  [now-fn]
+  (fn [rf]
+    (let [v-last-scheduled (volatile! {:time (now-fn) :level -1})]
+      (fn
+        ([] (rf))
+        ([result] (rf result))
+        ([result curve]
+         (let [{last-time :time last-level :level} @v-last-scheduled
+               {:keys [start ramps]} curve
+               start-time (+ (now-fn) (get start :time 0))
+               times (reductions + start-time (map :duration ramps))
+               levels (map :target ramps)
+               first-time (first times)
+               override (< first-time last-time)]
+           (vreset! v-last-scheduled {:time (last times) :level (last levels)})
+           (reduce rf result (cons {:time first-time
+                                    :shape (if override :cancel-and-hold :instant)
+                                    :value (or (:time start) last-level)}
+                                   (map (fn [level time]
+                                          {:value level :time time :shape :exponential})
+                                        levels
+                                        (last times))))))))))
 
-(extend-protocol Schedulable
-  number
-  (schedule! [this param at]
-    (schedule! param this at :cancel-and-hold))
-  cljs.core/PersistentArrayMap
-  (schedule! [this param at]
-    (let [{:keys [value time shape]} this]
-      (schedule! param value (+ at time) shape))))
+(defn- xf
+  "Creates a curve-x-schedule transducer from a ctx and start time"
+  [ctx at]
+  (curve-x-schedule (fn [] (+ at (o/get ctx "currentTime")))))
+
+;; Just ramps for now
+;; Maybe add ints later
 
 (extend-protocol Modulator
-  cljs.core/PersistentVector
+
+  PersistentVector
   (attach! [this param ctx at]
-    (doseq [event this
-            :let [now (o/get ctx "currentTime")]]
-      (schedule! event param (+ now at))))
+    (transduce (xf ctx at) (partial schedule! param) this))
+
   ManyToManyChannel
   (attach! [this param ctx at]
-    (go-loop []
-      (let [event (async/<! this)
-            now (o/get ctx "currentTime")]
-        (schedule! event param (+ now at))
+    (let [schedule-chan (async/chan (xf ctx at))]
+      (async/pipe this schedule-chan)
+      (go-loop []
+        (schedule! param (async/<! schedule-chan))
         (recur)))))
