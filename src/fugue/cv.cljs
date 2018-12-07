@@ -9,14 +9,21 @@
    (filter #(= :note-on (:type %)))
    (map :note)
    (dedupe)
-   (map note->hz)))
+   (map note->hz)
+   ;; TODO fix this
+   (map (fn [hz]
+          {:start {:level hz}
+           :curves []}))
+   ))
 
 (def midi-x-gate
   "Naive monophonic algorithm, outputs [0, 1)"
   (comp
    (map :velo)
    (dedupe)
-   (map #(/ % 128))))
+   (map #(/ % 128))
+   ;; TODO deal with this
+   (map (fn [l] {:level l}))))
 
 (defn fork
   "Returns a list of copies of chan with optional xforms applied.

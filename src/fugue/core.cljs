@@ -25,7 +25,7 @@
   "Returns a lazy sequence of {:time :value}"
   [bpm value]
   (let [nome (m/metronome bpm)]
-    (map #(into {} {:time % :value value}) (nome))))
+    (map #(into {} {:time % :level value}) (nome))))
 
 (defn play-repeated-pluck! [bpm]
   (let [gate (take 30 (four-on-floor bpm 1))
@@ -37,13 +37,11 @@
         (a/gain env)
         (out/play!))))
 
-(comment
-
-  (defn midi-x-sched [envdef now-fn]
-    (comp
-     cv/midi-x-gate
-     (e/gate-x-curve envdef)
-     (s/curve-x-schedule now-fn)))
+(defn midi-x-sched [envdef now-fn]
+  (comp
+   cv/midi-x-gate
+   (e/gate-x-curve envdef)
+   (s/curve-x-schedule now-fn)))
 
 (defn play-midi-synth! [midi-chan]
   (let [[hz gate] (cv/fork midi-chan cv/midi-x-hz cv/midi-x-gate)
@@ -59,7 +57,6 @@
 (defn basic-synth []
   (-> (a/saw 440)
       (a/lpf 220)))
-)
 
 ;;; Demo
 

@@ -18,30 +18,43 @@
     :instant
     (.setValueAtTime param value time)))
 
+(defn- curve-start-event [last-scheduled start-time curve-start-level]
+  (let [overlapping (< start-time (:time last-scheduled))]
+    {:time start-time
+     :value (or curve-start-level (:value last-scheduled))
+     :shape (if (and overlapping (not curve-start-level))
+              :cancel-and-hold
+              :instant)}))
+
+(defn- curve-ramp-events [start-time ramps shape]
+  (let [durations (map :duration ramps)
+        times (reductions + start-time durations)
+        levels (map :target ramps)]
+    (map (fn [level time]
+           {:value level :time time :shape shape})
+         levels
+         (rest times))))
+
 (defn- curve-x-schedule
   "Returns a stateful transducer that maps curves to schedulables using now-fn"
   [now-fn]
   (fn [rf]
-    (let [v-last-scheduled (volatile! {:time (now-fn) :level -1})]
+    (let [v-last-scheduled (volatile! {:time (now-fn) :value -1})]
       (fn
         ([] (rf))
         ([result] (rf result))
         ([result curve]
-         (let [{last-time :time last-level :level} @v-last-scheduled
+         (let [last-scheduled @v-last-scheduled
                {:keys [start ramps]} curve
                start-time (+ (now-fn) (get start :time 0))
-               times (reductions + start-time (map :duration ramps))
-               levels (map :target ramps)
-               first-time (first times)
-               override (< first-time last-time)]
-           (vreset! v-last-scheduled {:time (last times) :level (last levels)})
-           (reduce rf result (cons {:time first-time
-                                    :shape (if override :cancel-and-hold :instant)
-                                    :value (or (:time start) last-level)}
-                                   (map (fn [level time]
-                                          {:value level :time time :shape :exponential})
-                                        levels
-                                        (last times))))))))))
+               start-event (curve-start-event last-scheduled start-time (:level start))]
+           (print "last" last-scheduled)
+           (if-let [ramp-events (curve-ramp-events start-time ramps :exponential)]
+             (let [events (cons start-event ramp-events)]
+               (vswap! v-last-scheduled (last events))
+               (print events)
+               (reduce rf result events))
+             result)))))))
 
 (defn- xf
   "Creates a curve-x-schedule transducer from a ctx and start time"
@@ -55,11 +68,13 @@
 
   PersistentVector
   (attach! [this param ctx at]
-    (transduce (xf ctx at) (partial schedule! param) this))
+    (transduce (xf ctx at)
+               (fn [result event] (schedule! param event))
+               this))
 
   ManyToManyChannel
   (attach! [this param ctx at]
-    (let [schedule-chan (async/chan (xf ctx at))]
+    (let [schedule-chan (async/chan 1 (xf ctx at))]
       (async/pipe this schedule-chan)
       (go-loop []
         (schedule! param (async/<! schedule-chan))

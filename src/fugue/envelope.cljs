@@ -27,8 +27,6 @@
 ;; TODO should this (and the async Modulator) be extracted?
 
 (defn env-gen [envdef gate-chan]
-  (let [env (envelope envdef)
-        xf (map (partial curve env))
-        curve-chan (async/chan 1 xf)]
+  (let [curve-chan (async/chan 1 (gate-x-curve envdef))]
     (async/pipe gate-chan curve-chan)
     curve-chan))
