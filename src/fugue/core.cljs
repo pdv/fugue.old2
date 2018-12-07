@@ -42,6 +42,7 @@
         (a/gain env)
         (out/play!))))
 
+(comment
 (defn play-midi-synth! [midi-chan]
   (let [[hz gate] (cv/fork midi-chan cv/midi-x-hz cv/midi-x-gate)
         [hz1 hz2] (cv/fork hz)
@@ -56,6 +57,7 @@
 (defn basic-synth []
   (-> (a/saw 440)
       (a/lpf 220)))
+)
 
 ;;; Demo
 
@@ -63,8 +65,9 @@
 
 (defn start! []
   (print "Starting")
-;  (reset! ctx (play-repeated-pluck! 120))
-  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
+;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
+  (reset! ctx (play-repeated-pluck! 120))
+;  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
   (print "Started"))
 
 (defn stop! []
