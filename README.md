@@ -6,7 +6,7 @@
 
 #### Modeling synthesis with function composition
 ```clojure
-(use '[fugue.live :as f])
+(require '[fugue.live :as f])
 
 (def synth
   (-> (f/+ (f/saw 440)
