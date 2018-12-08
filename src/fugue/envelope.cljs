@@ -18,7 +18,7 @@
   (partial ramps envdef))
 
 (defn curve [envelope gate]
-  {:start (select-keys gate [:time])
+  {:time (:time gate)
    :ramps (envelope (:level gate))})
 
 (defn gate-x-curve [envdef]

@@ -34,7 +34,7 @@
 
 (defn constant-source [& modulators]
   {:constructor "createConstantSource"
-   :audio-params {"offset" (cons 0 modulators)}})
+   :audio-params {"offset" (cons 0.0001 modulators)}})
 
 (def + constant-source)
 

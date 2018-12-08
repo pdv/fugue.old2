@@ -46,7 +46,7 @@
 (defn play-midi-synth! [midi-chan]
   (let [[hz gate] (cv/fork midi-chan cv/midi-x-hz cv/midi-x-gate)
         [hz1 hz2] (cv/fork hz)
-        env (e/env-gen (e/adsr 0.03 0.3 0.5 0.3) gate)
+        env (e/env-gen (e/adsr 1 2 0.3 0.6) gate)
         filter-env (a/+ 2 (a/* env 8000))]
     (-> (a/+ (a/saw hz1)
              (a/saw (a/* 2.5 hz2)))

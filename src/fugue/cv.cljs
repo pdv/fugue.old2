@@ -12,9 +12,7 @@
    (map note->hz)
    ;; TODO fix this
    (map (fn [hz]
-          {:start {:level hz}
-           :curves []}))
-   ))
+          {:ramps [{:target hz :shape :instant :duration 0}]}))))
 
 (def midi-x-gate
   "Naive monophonic algorithm, outputs [0, 1)"
