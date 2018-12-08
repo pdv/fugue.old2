@@ -41,6 +41,8 @@
   {:constructor "createConstantSource"
    :audio-params {"offset" (cons 0.0001 modulators)}})
 
+;;  should these be somewhere else?
+
 (def + constant-source)
 
 (defn *
@@ -54,3 +56,12 @@
 
 (defn lfo [offset freq amount]
   (+ offset (* amount (sin-osc freq))))
+
+(defn fb [in f]
+  (+ in (f in)))
+
+(defn simple-delay
+  ([in] (simple-delay in 0.3))
+  ([in time] (simple-delay in time 0.4))
+  ([in time amount]
+   (fb in #(-> % (delay time) (gain amount)))))
