@@ -13,3 +13,9 @@
           (/ bpm)
           (* 60)
           (+ start))))))
+
+(defn four-on-floor
+  "Returns a lazy sequence of {:time :value}"
+  [bpm value]
+  (let [nome (metronome bpm)]
+    (map #(into {} {:time % :level value}) (nome))))

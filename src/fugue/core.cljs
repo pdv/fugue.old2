@@ -10,25 +10,8 @@
             [fugue.scheduling :as s]
             [fugue.output :as out]))
 
-;;; Examples
-
-(defn synth [hz-chan]
-  (-> (a/saw hz-chan)
-      (a/lpf (a/lfo 880 2 300) 1.3)))
-
-(defn effect [in]
-  (-> in
-      (a/lpf 440 1.2)
-      (a/hpf 990 2.0)))
-
-(defn four-on-floor
-  "Returns a lazy sequence of {:time :value}"
-  [bpm value]
-  (let [nome (m/metronome bpm)]
-    (map #(into {} {:time % :level value}) (nome))))
-
 (defn play-repeated-pluck! [bpm]
-  (let [gate (take 30 (four-on-floor bpm 1))
+  (let [gate (take 30 (m/four-on-floor bpm 1))
         env-fn (e/perc 0.03 0.03)
         env (into [] (e/gate-x-curve (e/perc 0.2 0.4)) gate)]
         ; filter-env (a/+ 2 (a/* env 8000))]
@@ -37,11 +20,24 @@
         (a/gain env)
         (out/play!))))
 
-(defn midi-x-sched [envdef now-fn]
-  (comp
-   cv/midi-x-gate
-   (e/gate-x-curve envdef)
-   (s/curve-x-schedule now-fn)))
+(defn steel-drum [freq gate]
+  (a/* (e/env-gen (e/perc 0.01 0.2) gate)
+       (a/+ (a/sin-osc (a/* freq 0.5))
+            (-> (a/saw freq)
+                (a/lpf (a/* freq 1.1) 0.4)))))
+
+(defn synth [freq gate]
+  (let [env (e/env-gen (e/adsr 1 2 0.3 0.6) gate)
+        filter-env (a/+ 2 (a/* 8000 env))]
+    (-> (a/+ (a/saw freq))
+        (a/lpf filter-env)
+        (a/gain 0.6))))
+
+(defn play-synth!
+  "synth is a (freq, gate) -> node fn"
+  [midi synth]
+  (let [[freq gate] (cv/fork midi cv/midi-x-hz cv/midi-x-gate)]
+    (out/play! (synth freq gate))))
 
 (defn play-midi-synth! [midi-chan]
   (let [[hz gate] (cv/fork midi-chan cv/midi-x-hz cv/midi-x-gate)
@@ -52,12 +48,8 @@
              (a/saw (a/* 2.5 hz2)))
         (a/lpf filter-env)
         (a/gain 0.6)
-        (a/simple-delay)
+;        (a/simple-delay)
         (out/play!))))
-
-(defn basic-synth []
-  (-> (a/saw 440)
-      (a/lpf 220)))
 
 ;;; Demo
 
@@ -67,7 +59,8 @@
   (print "Starting")
 ;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
 ;  (reset! ctx (play-repeated-pluck! 120))
-  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
+;  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
+  (play-synth! (kb/kb-midi-chan) synth)
   (print "Started"))
 
 (defn stop! []
