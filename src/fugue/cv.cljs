@@ -17,10 +17,14 @@
         ([] (rf))
         ([result] (rf result))
         ([result midi]
-         (let [op (if (= :note-on (:type midi)) conj disj)
-               down (op @v-down (:note midi))]
-           (vreset! v-down down)
-           (rf result (priority-fn down))))))))
+         (let [{:keys [type note]} midi
+               op (if (= :note-on type) conj #(remove #{%2} %1))
+               down (op @v-down note)]
+           (print down)
+           (vreset! v-down (into [] down))
+           (if-let [output (priority-fn down)]
+             (rf result output)
+             result)))))))
 
 (def midi-x-hz
   (comp
@@ -30,12 +34,30 @@
    (map (fn [hz]
           {:ramps [{:target hz :shape :instant :duration 0}]}))))
 
+(defn midi-x-velo
+  "Returns a stateful transducer that maps midi events to midi velocities,
+  retriggering if retrigger is truthful"
+  [retrigger]
+  (fn [rf]
+    (let [v-down-count (volatile! 0)]
+      (fn
+        ([] (rf))
+        ([result] (rf result))
+        ([result midi]
+         (let [{:keys [type velo]} midi
+               note-on (= :note-on type)
+               prev-down-count @v-down-count]
+           (vswap! v-down-count (if note-on inc dec))
+           (if (or (and note-on retrigger (> 1 prev-down-count))
+                   (and note-on (= 0 prev-down-count))
+                   (and (not note-on) (= 1 prev-down-count)))
+             (rf result velo)
+             result)))))))
 
 (def midi-x-gate
   "Naive monophonic algorithm, outputs [0, 1)"
   (comp
-   (map :velo)
-   (dedupe)
+   (midi-x-velo true)
    (map #(/ % 128))
    ;; TODO deal with this
    (map (fn [l] {:level l}))))
