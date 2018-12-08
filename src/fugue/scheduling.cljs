@@ -51,7 +51,7 @@
            (print "last" last-scheduled)
            (if-let [ramp-events (curve-ramp-events start-time ramps :exponential)]
              (let [events (cons start-event ramp-events)]
-               (vswap! v-last-scheduled (last events))
+               (vreset! v-last-scheduled (last events))
                (print events)
                (reduce rf result events))
              result)))))))

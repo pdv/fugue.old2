@@ -65,8 +65,8 @@
 (defn start! []
   (print "Starting")
 ;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
-  (reset! ctx (play-repeated-pluck! 120))
-;  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
+;  (reset! ctx (play-repeated-pluck! 120))
+  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
   (print "Started"))
 
 (defn stop! []
