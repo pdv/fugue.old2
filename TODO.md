@@ -1,11 +1,9 @@
 
 ;; rename curve -> contour
 
-easy
-- note priority transducers
-
-medium
-- pub/sub or mult?
+- feedback for real
+- solidify ControlVoltage
+- polyphony
 
 hard
 - sampler

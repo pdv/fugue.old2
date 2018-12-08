@@ -38,13 +38,9 @@
   "synth is a (freq, gate) -> node fn"
   [synth midi]
   (let [midi-mult (async/mult midi)
-        freq (async/chan 1 cv/midi-x-hz)
-        freq-mult (async/mult freq)
-        gate (async/chan 1 cv/midi-x-gate)
-        gate-mult (async/mult gate)]
-    (async/tap midi-mult freq)
-    (async/tap midi-mult gate)
-    (synth (s/ControlVoltage. freq-mult) (s/ControlVoltage. gate-mult))))
+        freq-cv (s/ControlVoltage. midi-mult cv/midi-x-hz)
+        gate-cv (s/ControlVoltage. midi-mult cv/midi-x-gate)]
+    (synth freq-cv gate-cv)))
 
 ;;; Demo
 
@@ -54,7 +50,6 @@
   (print "Starting")
 ;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
 ;  (reset! ctx (play-repeated-pluck! 120))
-;  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
   (reset! ctx (out/play! (midify synth (kb/kb-midi-chan))))
   (print "Started"))
 

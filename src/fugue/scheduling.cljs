@@ -68,16 +68,14 @@
 (defprotocol Transducable
   (apply-transducer [this xf]))
 
-(defrecord ControlVoltage [mult]
+(defrecord ControlVoltage [mult xform]
   Transducable
   (apply-transducer [this xf]
-    (let [xf-chan (async/chan 1 xf)
-          xf-mult (async/mult xf-chan)]
-      (async/tap mult xf-chan)
-      (ControlVoltage. xf-mult)))
+    (ControlVoltage. mult (comp xform xf)))
   Modulator
   (attach! [this param ctx at]
-    (let [schedule-chan (async/chan 1 (schedule-xf ctx at))]
+    (let [xf (comp xform (schedule-xf ctx at))
+          schedule-chan (async/chan 1 xf)]
       (async/tap mult schedule-chan)
       (go-loop []
         (schedule! param (async/<! schedule-chan))
