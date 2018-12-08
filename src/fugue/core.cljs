@@ -52,6 +52,7 @@
              (a/saw (a/* 2.5 hz2)))
         (a/lpf filter-env)
         (a/gain 0.6)
+        (a/delay 2)
         (out/play!))))
 
 (defn basic-synth []

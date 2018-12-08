@@ -1,5 +1,5 @@
 (ns fugue.nodes
-  (:refer-clojure :exclude [+ *]))
+  (:refer-clojure :exclude [+ * delay]))
 
 (defn oscillator
   ([type freq] (oscillator type freq 0))
@@ -31,6 +31,11 @@
   {:in in
    :constructor "createGain"
    :audio-params {"gain" [0 amp]}})
+
+(defn delay [in time]
+  {:in in
+   :constructor "createDelay"
+   :audio-params {"delayTime" [0 time]}})
 
 (defn constant-source [& modulators]
   {:constructor "createConstantSource"
