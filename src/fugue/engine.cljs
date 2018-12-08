@@ -5,17 +5,17 @@
   (attach! [this param ctx at]))
 
 (defn create-node
-  "Recursively builds an AudioNode graph defined by the provided map.
+  "Recursively builds an AudioNode graph defined by the provided nodedef.
   Any sources in the graph will be started at at.
   Returns the AudioNode defined by the root of the graph (the output)"
-  [{:keys [in constructor static-params audio-params]} ctx at]
-  (let [node (js-invoke ctx constructor)]
-    (if in
+  [nodedef ctx at]
+  (let [node (js-invoke ctx (:constructor nodedef))]
+    (if-let [in (:in nodedef)]
       (.connect (create-node in ctx at) node)
       (.start node at))
-    (doseq [[name value] static-params]
+    (doseq [[name value] (:static-params nodedef)]
       (o/set node name value))
-    (doseq [[name modulators] audio-params
+    (doseq [[name modulators] (:audio-params nodedef)
             :let [param (o/get node name)]
             modulator modulators]
       (attach! modulator param ctx at))
