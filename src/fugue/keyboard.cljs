@@ -20,10 +20,11 @@
          ([result keypress]
           (let [type (.-type keypress)
                 key (.-key keypress)
+                repeat (.-repeat keypress)
                 offset (key->offset key)]
-            (if-not (nil? offset)
+            (if-not (or (nil? offset) repeat)
               (rf result (into {:note (+ 60 offset (* 12 @voctave))}
-                               (case type
+                               (case (.-type keypress)
                                  "keydown" {:type :note-on :velo 127}
                                  "keyup" {:type :note-off :velo 0})))
               (when (= "keydown" type)
