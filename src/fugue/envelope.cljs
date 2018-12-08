@@ -1,5 +1,6 @@
 (ns fugue.envelope
-  (:require [cljs.core.async :as async]))
+  (:require [cljs.core.async :as async]
+            [fugue.scheduling :as s]))
 
 (defn adsr [a d s r]
   {:open [{:target 1 :duration a}
@@ -26,7 +27,5 @@
 
 ;; TODO should this (and the async Modulator) be extracted?
 
-(defn env-gen [envdef gate-chan]
-  (let [curve-chan (async/chan 1 (gate-x-curve envdef))]
-    (async/pipe gate-chan curve-chan)
-    curve-chan))
+(defn env-gen [envdef gate]
+  (s/apply-transducer gate (gate-x-curve envdef)))

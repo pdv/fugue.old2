@@ -65,18 +65,27 @@
 ;; Just ramps for now
 ;; Maybe add ints later
 
-(extend-protocol Modulator
+(defprotocol Transducable
+  (apply-transducer [this xf]))
 
+(defrecord ControlVoltage [mult]
+  Transducable
+  (apply-transducer [this xf]
+    (let [xf-chan (async/chan 1 xf)
+          xf-mult (async/mult xf-chan)]
+      (async/tap mult xf-chan)
+      (ControlVoltage. xf-mult)))
+  Modulator
+  (attach! [this param ctx at]
+    (let [schedule-chan (async/chan 1 (schedule-xf ctx at))]
+      (async/tap mult schedule-chan)
+      (go-loop []
+        (schedule! param (async/<! schedule-chan))
+        (recur)))))
+
+(extend-protocol Modulator
   PersistentVector
   (attach! [this param ctx at]
     (transduce (schedule-xf ctx at)
                (fn [result event] (schedule! param event))
-               this))
-
-  ManyToManyChannel
-  (attach! [this param ctx at]
-    (let [schedule-chan (async/chan 1 (schedule-xf ctx at))]
-      (async/pipe this schedule-chan)
-      (go-loop []
-        (schedule! param (async/<! schedule-chan))
-        (recur)))))
+               this)))

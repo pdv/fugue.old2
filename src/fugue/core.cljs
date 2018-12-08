@@ -29,27 +29,22 @@
 (defn synth [freq gate]
   (let [env (e/env-gen (e/adsr 1 2 0.3 0.6) gate)
         filter-env (a/+ 2 (a/* 8000 env))]
-    (-> (a/+ (a/saw freq))
+    (-> (a/+ (a/saw freq)
+             (a/saw (a/* 1.5 freq)))
         (a/lpf filter-env)
         (a/gain 0.6))))
 
-(defn play-synth!
+(defn midify
   "synth is a (freq, gate) -> node fn"
-  [midi synth]
-  (let [[freq gate] (cv/fork midi cv/midi-x-hz cv/midi-x-gate)]
-    (out/play! (synth freq gate))))
-
-(defn play-midi-synth! [midi-chan]
-  (let [[hz gate] (cv/fork midi-chan cv/midi-x-hz cv/midi-x-gate)
-        [hz1 hz2] (cv/fork hz)
-        env (e/env-gen (e/adsr 1 2 0.3 0.6) gate)
-        filter-env (a/+ 2 (a/* env 8000))]
-    (-> (a/+ (a/saw hz1)
-             (a/saw (a/* 2.5 hz2)))
-        (a/lpf filter-env)
-        (a/gain 0.6)
-;        (a/simple-delay)
-        (out/play!))))
+  [synth midi]
+  (let [midi-mult (async/mult midi)
+        freq (async/chan 1 cv/midi-x-hz)
+        freq-mult (async/mult freq)
+        gate (async/chan 1 cv/midi-x-gate)
+        gate-mult (async/mult gate)]
+    (async/tap midi-mult freq)
+    (async/tap midi-mult gate)
+    (synth (s/ControlVoltage. freq-mult) (s/ControlVoltage. gate-mult))))
 
 ;;; Demo
 
@@ -60,7 +55,7 @@
 ;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
 ;  (reset! ctx (play-repeated-pluck! 120))
 ;  (reset! ctx (play-midi-synth! (kb/kb-midi-chan)))
-  (play-synth! (kb/kb-midi-chan) synth)
+  (reset! ctx (out/play! (midify synth (kb/kb-midi-chan))))
   (print "Started"))
 
 (defn stop! []
