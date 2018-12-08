@@ -37,8 +37,6 @@
          levels
          shapes)))
 
-;; remove start value, just :time (:time is an extension) on midi, gate, curve
-
 (defn- curve-x-schedule
   "Returns a stateful transducer that maps curves to schedulables using now-fn"
   [now-fn]

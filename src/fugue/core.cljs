@@ -30,7 +30,7 @@
 (defn play-repeated-pluck! [bpm]
   (let [gate (take 30 (four-on-floor bpm 1))
         env-fn (e/perc 0.03 0.03)
-        env (into [] (e/gate-x-curve (e/perc 0.07 0.1)) gate)]
+        env (into [] (e/gate-x-curve (e/perc 0.2 0.4)) gate)]
         ; filter-env (a/+ 2 (a/* env 8000))]
     (-> (a/+ (a/saw 220)
              (a/saw 440))

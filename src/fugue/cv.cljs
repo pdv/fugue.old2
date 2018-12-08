@@ -4,15 +4,32 @@
 (defn note->hz [note]
   (* 440.0 (js/Math.pow 2.0 (/ (- note 69.0) 12.0))))
 
+;; note priority is [note] -> note
+;; low, high, last, first
+
+(defn midi-x-note
+  "Returns a stateful transducer that maps midi events to midi notes based on
+  priority-fn, which selects from a list of notes currently down."
+  [priority-fn]
+  (fn [rf]
+    (let [v-down (volatile! [])]
+      (fn
+        ([] (rf))
+        ([result] (rf result))
+        ([result midi]
+         (let [op (if (= :note-on (:type midi)) conj disj)
+               down (op @v-down (:note midi))]
+           (vreset! v-down down)
+           (rf result (priority-fn down))))))))
+
 (def midi-x-hz
   (comp
-   (filter #(= :note-on (:type %)))
-   (map :note)
-   (dedupe)
+   (midi-x-note last)
    (map note->hz)
    ;; TODO fix this
    (map (fn [hz]
           {:ramps [{:target hz :shape :instant :duration 0}]}))))
+
 
 (def midi-x-gate
   "Naive monophonic algorithm, outputs [0, 1)"
