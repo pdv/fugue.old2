@@ -8,11 +8,8 @@
   "Recursively builds an AudioNode graph defined by the provided nodedef.
   Any sources in the graph will be started at at.
   Returns the AudioNode defined by the root of the graph (the output)"
-  [nodedef ctx at]
+  [ctx at nodedef]
   (let [node (js-invoke ctx (:constructor nodedef))]
-    (if-let [in (:in nodedef)]
-      (.connect (create-node in ctx at) node)
-      (.start node at))
     (doseq [[name value] (:static-params nodedef)]
       (o/set node name value))
     (doseq [[name modulators] (:audio-params nodedef)
@@ -21,10 +18,22 @@
       (attach! modulator param ctx at))
     node))
 
+(defn create-synth
+  [ctx at synthdef]
+  (let [node-factory (partial create-node ctx at)
+        nodedefs (:nodes synthdef)
+        nodes (reduce #(update % %2 node-factory) nodedefs (keys nodedefs))
+        source-node (nodes (:source-id synthdef))
+        output-node (nodes (:output-id synthdef))]
+    (doseq [{:keys [from to]} (:connections synthdef)]
+      (.connect (nodes from) (nodes to)))
+    (.start source-node at)
+    output-node))
+
 (extend-protocol Modulator
   number
   (attach! [this param ctx at]
     (o/set param "value" this))
   cljs.core/PersistentArrayMap
   (attach! [this param ctx at]
-    (.connect (create-node this ctx at) param)))
+    (.connect (create-synth ctx at this) param)))
