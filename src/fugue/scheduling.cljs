@@ -52,7 +52,6 @@
                ramp-events (curve-ramp-events start-time (:ramps curve))]
            (if-not (empty? ramp-events)
              (let [all-events (cons start-event ramp-events)]
-               (print all-events)
                (vreset! v-last-scheduled (last all-events))
                (reduce rf result all-events))
              result)))))))

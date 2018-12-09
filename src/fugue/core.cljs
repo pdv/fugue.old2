@@ -32,7 +32,12 @@
     (-> (a/+ (a/saw freq)
              (a/saw (a/* 1.5 freq)))
         (a/lpf filter-env)
+        (a/simple-delay)
         (a/gain 0.6))))
+
+(defn simp []
+  (-> (a/sin-osc 440)
+      (a/simple-delay)))
 
 (defn midify
   "synth is a (freq, gate) -> node fn"
@@ -51,6 +56,7 @@
 ;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
 ;  (reset! ctx (play-repeated-pluck! 120))
   (reset! ctx (out/play! (midify synth (kb/kb-midi-chan))))
+;  (reset! ctx (out/play! (simp)))
   (print "Started"))
 
 (defn stop! []

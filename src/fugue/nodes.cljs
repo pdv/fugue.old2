@@ -15,6 +15,21 @@
         (update :nodes assoc id node-def)
         (update :connections conj {:from (:output-id in) :to id}))))
 
+(defn feedback [in & effect-node-defs]
+  (let [id (random-uuid)
+        gain-def {:constructor "createGain"}
+        effects (into {} (map (fn [node-def] {(random-uuid) node-def}) effect-node-defs))]
+    (-> in
+        ;; pass through
+        (assoc :output-id id)
+        (update :nodes assoc id gain-def)
+        (update :connections conj {:from (:output-id in) :to id})
+        ;;; feedback
+        (update :nodes conj effects)
+        (update :connections concat (map (fn [from to] {:from from :to to})
+                                         (cons id (keys effects))
+                                         (concat (keys effects) [id]))))))
+
 (defn- osc-def [type freq detune]
   {:constructor "createOscillator"
    :static-params {"type" type}
@@ -46,13 +61,19 @@
 (def hpf (partial biquad-filter "highpass"))
 (def bpf (partial biquad-filter "bandpass"))
 
+(defn gain-def [amp]
+  {:constructor "createGain"
+   :audio-params {"gain" [0 amp]}})
+
 (defn gain [in amp]
-  (effect in {:constructor "createGain"
-              :audio-params {"gain" [0 amp]}}))
+  (effect in (gain-def amp)))
+
+(defn delay-def [time]
+  {:constructor "createDelay"
+   :audio-params {"delayTime" [0 time]}})
 
 (defn delay [in time]
-  (effect in {:constructor "createDelay"
-              :audio-params {"delayTime" [0 time]}}))
+  (effect in (delay-def time)))
 
 (defn constant-source [& modulators]
   (source {:constructor "createConstantSource"
@@ -74,12 +95,8 @@
 (defn lfo [offset freq amount]
   (+ offset (* amount (sin-osc freq))))
 
-(defn fb [in f]
-  ()
-  (+ in (f in)))
-
 (defn simple-delay
   ([in] (simple-delay in 0.3))
   ([in time] (simple-delay in time 0.4))
   ([in time amount]
-   (fb in #(-> % (delay time) (gain amount)))))
+   (feedback in (delay-def time) (gain-def amount))))
