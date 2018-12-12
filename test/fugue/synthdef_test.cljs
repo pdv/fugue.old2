@@ -12,3 +12,17 @@
               :audio-params []}
              ((:nodes src) id)))))
 
+(def basic-synthdef
+  {:source-ids #{"abc"}
+   :output-id "abc"
+   :nodes {"abc" {:constructor "createOscillator"}}
+   :connections #{}})
+
+(deftest test-effect
+  (let [effect-def {:constructor "createGain" :audio-params []}
+        synthdef (sut/effect basic-synthdef effect-def)
+        id (:output-id synthdef)]
+    (print synthdef)
+    (t/is (= #{"abc"} (:source-ids synthdef)))
+    (t/is (= effect-def ((:nodes synthdef) id)))
+    (t/is (= #{{:from "abc" :to id}} (:connections synthdef)))))
