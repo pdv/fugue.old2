@@ -33,21 +33,18 @@
     (-> synthdef
         (update-in [:nodes node-id :audio-params param-name] conj modulator))))
 
-(defn- process-param
-  [synthdef node-id param-name modulators]
-  (reduce (fn [synthdef modulator]
-            (process-modulator synthdef node-id param-name modulator))
-          synthdef
-          modulators))
-
 (defn- add-node
   "Returns a new synthdef with nodedef added"
   [synthdef id nodedef]
   (let [params (:audio-params nodedef)
-        node-without-aparams (assoc nodedef :audio-params [])]
+        node-without-aparams (assoc nodedef :audio-params [])
+        synthdef (update synthdef :nodes assoc id node-without-aparams)]
     (reduce (fn [synthdef [param-name modulators]]
-              (process-param synthdef id param-name modulators))
-            (update synthdef :nodes assoc id node-without-aparams)
+              (reduce (fn [synthdef modulator]
+                        (process-modulator synthdef id param-name modulator))
+                      synthdef
+                      modulators))
+            synthdef
             params)))
 
 (defn source [nodedef]
