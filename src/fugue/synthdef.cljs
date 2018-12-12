@@ -1,4 +1,5 @@
-(ns fugue.synthdef)
+(ns fugue.synthdef
+  (:require [clojure.set :refer [union]]))
 
 ;; during assembly, the only params that are extracted are node params
 ;; during compilation, keyword params will be raised to the top level
@@ -13,12 +14,11 @@
    :connections #{}})
 
 (defn- absorb
-  "I think merge-with conj would work if not for output-id"
   [synthdef other-synthdef]
   (-> synthdef
-      (update :source-ids merge (:source-ids other-synthdef))
+      (update :source-ids union (:source-ids other-synthdef))
       (update :nodes merge (:nodes other-synthdef))
-      (update :connections merge (:connections other-synthdef))))
+      (update :connections union (:connections other-synthdef))))
 
 (defn- process-modulator
   "If a modulator is a synthdef, merge it into synthdef.
@@ -37,15 +37,14 @@
   [synthdef node-id param-name modulators]
   (reduce (fn [synthdef modulator]
             (process-modulator synthdef node-id param-name modulator))
-          (assoc-in synthdef [:nodes node-id :audio-params param-name] [])
+          synthdef
           modulators))
 
 (defn- add-node
   "Returns a new synthdef with nodedef added"
   [synthdef id nodedef]
   (let [params (:audio-params nodedef)
-        node-without-aparams (assoc nodedef :audio-params [])
-        synthdef (update synthdef :nodes assoc id node-without-aparams)]
+        node-without-aparams (assoc nodedef :audio-params [])]
     (reduce (fn [synthdef [param-name modulators]]
               (process-param synthdef id param-name modulators))
             (update synthdef :nodes assoc id node-without-aparams)
