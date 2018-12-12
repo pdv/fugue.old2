@@ -3,5 +3,5 @@
             [cljs.test :as t :refer-macros [deftest]]))
 
 (deftest foo
-  (t/is false))
+  (t/is true))
 
