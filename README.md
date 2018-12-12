@@ -71,6 +71,10 @@ To start the figwheel server:
 ```
 lein figwheel
 ```
+To have tests run on changes, run this from the figwheel repl:
+```
+(require 'fugue.test-runner)
+```
 
 ## License
 

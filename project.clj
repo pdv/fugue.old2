@@ -8,7 +8,7 @@
   :plugins [[lein-figwheel "0.5.15"]]
   :cljsbuild {
     :builds [{:id "fugue2"
-              :source-paths ["src/"]
+              :source-paths ["src/" "test/"]
               :figwheel true
               :compiler {:main "fugue.core"
                          :asset-path "js/out"

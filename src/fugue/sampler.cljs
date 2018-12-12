@@ -1,5 +1,4 @@
-(ns fugue.sampler
-  (:require [fugue.audio :as a]))
+(ns fugue.sampler)
 
 ;; TODO
 ;; - how to avoid global buffer atom?
