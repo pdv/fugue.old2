@@ -24,7 +24,9 @@
             modulators)))
 
 (defn- create-node [synth ctx id nodedef]
-  (let [node (js-invoke ctx (:constructor nodedef))]
+  (let [node (js-invoke ctx (:constructor nodedef))
+        init (update synth :nodes assoc id node)
+        mod-processor #(apply process-modulator %1 node %2)]
     (doseq [[name value] (:static-params nodedef)]
       (o/set node name value))
     (reduce (fn [synth [param-name modulators]]
