@@ -31,3 +31,9 @@
         id (:output-id src)]
     (t/is (= #{"abc" id} (:source-ids src)))
     (t/is (= #{{:from "abc" :to id :param "frequency"}} (:connections src)))))
+
+(deftest test-symbol
+  (let [src (sut/source {:constructor "createOscillator"
+                         :audio-params {"frequency" [440 :freq]}})
+        id (:output-id src)]
+    (t/is (= [{:node-id id :param-name "frequency"}] (-> src :params :freq)))))

@@ -10,6 +10,7 @@
 (defn- create-empty []
   {:source-ids #{}
    :output-id nil
+   :params {}
    :nodes {}
    :connections #{}})
 
@@ -24,14 +25,20 @@
   "If a modulator is a synthdef, merge it into synthdef.
   Otherwise, add it to the list of modulators on the nodedef."
   [synthdef node-id param-name modulator]
-  (if (synthdef? modulator)
+  (condp #(%1 %2) modulator
+    synthdef?
     (-> synthdef
         (absorb modulator)
         (update :connections conj {:from (:output-id modulator)
                                    :to node-id
                                    :param param-name}))
+    number?
     (-> synthdef
-        (update-in [:nodes node-id :audio-params param-name] conj modulator))))
+        (update-in [:nodes node-id :audio-params param-name] conj modulator))
+    ;; else
+    (-> synthdef
+        (update-in [:params modulator] conj {:node-id node-id
+                                             :param-name param-name}))))
 
 (defn- add-node
   "Returns a new synthdef with nodedef added"

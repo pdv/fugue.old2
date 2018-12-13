@@ -1,46 +1,19 @@
 (ns fugue.synth-builder
   (:require [goog.object :as o]))
 
-(defn- new-synth [synthdef]
-  (-> (select-keys synthdef [:source-ids :output-id :connections])
-      (assoc :nodes {})
-      (assoc :params {})))
-
-(defn- process-modulator
-  "If modulator is a number, set it. Otherwise, add {modulator: param} to :params"
-  [synth node param modulator]
-  (if (number? modulator)
-    (do
-      (o/set param "value" modulator)
-      synth)
-    (update synth :nodes assoc modulator param)))
-
-(defn- process-param
-  [synth node param-name modulators]
-  (let [param (o/get node param-name)]
-    (reduce (fn [synth modulator]
-              (process-modulator synth node param modulator))
-            synth
-            modulators)))
-
-(defn- create-node [synth ctx id nodedef]
-  (let [node (js-invoke ctx (:constructor nodedef))
-        init (update synth :nodes assoc id node)
-        mod-processor #(apply process-modulator %1 node %2)]
+(defn- create-node
+  [ctx nodedef]
+  (let [node (js-invoke ctx (:constructor nodedef))]
     (doseq [[name value] (:static-params nodedef)]
       (o/set node name value))
-    (reduce (fn [synth [param-name modulators]]
-              (process-param synth node param-name modulators))
-            (update synth :nodes assoc id node)
-            (:audio-params nodedef))))
-
-(defn- create-nodes [synth ctx nodes]
-  (reduce (fn [synth [node-id nodedef]]
-            (create-node synth ctx node-id nodedef))
-          synth
-          nodes))
+    (doseq [[name values] (:audio-params nodedef)
+            :let [param (o/get node name)]
+            value values]
+      (o/set param "value" value))
+    node))
 
 (defn- make-connections [synth]
+  (print "making connections" synth)
   (doseq [{:keys [from to param]} (:connections synth)
           :let [nodes (:nodes synth)
                 from-node (nodes from)
@@ -49,10 +22,13 @@
     (.connect from-node dest))
   synth)
 
+(defn update-values [m f & args]
+  (reduce (fn [r [k v]] (assoc r k (apply f v args))) {} m))
+
 (defn create-synth [ctx synthdef]
+  (print "creating" synthdef)
   (-> synthdef
-      new-synth
-      (create-nodes ctx (:nodes synthdef))
+      (update :nodes update-values (partial create-node ctx))
       make-connections))
 
 (defn start [synth at]
