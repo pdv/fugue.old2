@@ -1,14 +1,12 @@
 (ns fugue.synth-builder
   (:require [goog.object :as o]))
 
-(defn empty-synth []
-  {:source-ids #{}
-   :output-id nil
-   :nodes {}
-   :connections {}
-   :params {}})
+(defn- new-synth [synthdef]
+  (-> (select-keys synthdef [:source-ids :output-id :connections])
+      (assoc :nodes {})
+      (assoc :params {})))
 
-(defn create-modulator
+(defn- process-modulator
   "If modulator is a number, set it. Otherwise, add {modulator: param} to :params"
   [synth node param modulator]
   (if (number? modulator)
@@ -17,42 +15,37 @@
       synth)
     (update synth :nodes assoc modulator param)))
 
-(defn create-node [synth ctx id nodedef]
-  (print nodedef)
-  (let [node (js-invoke ctx (:constructor nodedef))
-        synth (update synth :nodes assoc id node)]
+(defn- process-param
+  [synth node param-name modulators]
+  (let [param (o/get node param-name)]
+    (reduce (fn [synth modulator]
+              (process-modulator synth node param modulator))
+            synth
+            modulators)))
+
+(defn- create-node [synth ctx id nodedef]
+  (let [node (js-invoke ctx (:constructor nodedef))]
     (doseq [[name value] (:static-params nodedef)]
       (o/set node name value))
     (reduce (fn [synth [param-name modulators]]
-              (let [param (o/get node param-name)]
-                (reduce (fn [synth modulator]
-                          (create-modulator synth node param modulator))
-                        synth
-                        modulators)))
-            synth
+              (process-param synth node param-name modulators))
+            (update synth :nodes assoc id node)
             (:audio-params nodedef))))
 
-(defn make-connections [synth]
-  (doseq [{:keys [from to param]} (:connections synth)
-          :let [nodes (:nodes synth)
-                from-node (nodes from)
-                to-node (nodes to)]]
-    (.connect from-node
-              (if param
-                (o/get to-node param)
-                to-node)))
-  synth)
-
-(defn new-synth [synthdef]
-  (-> (select-keys synthdef [:source-ids :output-id :connections])
-      (assoc :nodes {})
-      (assoc :params {})))
-
-(defn create-nodes [synth ctx nodes]
+(defn- create-nodes [synth ctx nodes]
   (reduce (fn [synth [node-id nodedef]]
             (create-node synth ctx node-id nodedef))
           synth
           nodes))
+
+(defn- make-connections [synth]
+  (doseq [{:keys [from to param]} (:connections synth)
+          :let [nodes (:nodes synth)
+                from-node (nodes from)
+                to-node (nodes to)
+                dest (if param (o/get to-node param) to-node)]]
+    (.connect from-node dest))
+  synth)
 
 (defn create-synth [ctx synthdef]
   (-> synthdef
