@@ -4,10 +4,10 @@
 ;; during assembly, the only params that are extracted are node params
 ;; during compilation, keyword params will be raised to the top level
 
-(defn synthdef? [x]
+(defn- synthdef? [x]
   (:output-id x))
 
-(defn create-empty []
+(defn- create-empty []
   {:source-ids #{}
    :output-id nil
    :nodes {}
@@ -60,5 +60,4 @@
         (add-node id nodedef)
         (assoc :output-id id)
         (update :connections conj {:from (:output-id synthdef) :to id}))))
-
 
