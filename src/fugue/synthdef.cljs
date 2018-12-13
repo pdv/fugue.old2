@@ -37,7 +37,7 @@
   "Returns a new synthdef with nodedef added"
   [synthdef id nodedef]
   (let [params (:audio-params nodedef)
-        node-without-aparams (assoc nodedef :audio-params [])
+        node-without-aparams (assoc nodedef :audio-params {})
         synthdef (update synthdef :nodes assoc id node-without-aparams)]
     (reduce (fn [synthdef [param-name modulators]]
               (reduce (fn [synthdef modulator]

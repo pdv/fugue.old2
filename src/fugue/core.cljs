@@ -8,7 +8,9 @@
             [fugue.metronome :as m]
             [fugue.keyboard :as kb]
             [fugue.scheduling :as s]
-            [fugue.output :as out]))
+            [fugue.output :as out]
+            [fugue.synthdef :as synthdef]
+            [fugue.synth-builder :as builder]))
 
 (defn play-repeated-pluck! [bpm]
   (let [gate (take 30 (m/four-on-floor bpm 1))
@@ -47,6 +49,21 @@
         gate-cv (s/ControlVoltage. midi-mult cv/midi-x-gate)]
     (synth freq-cv gate-cv)))
 
+;;;
+
+(defn sdef []
+  (synthdef/effect (synthdef/source {:constructor "createOscillator"
+                                     :static-params {"type" "sawtooth"}
+                                     :audio-params {"frequency" [440]}})
+                   {:constructor "createGain"
+                    :audio-params {"gain" [0.1]}}))
+
+(defn run-sdef! []
+  (let [ctx (js/AudioContext.)
+        synth (builder/create-synth ctx (sdef))]
+    (builder/out synth ctx)
+    (builder/start synth 0)))
+
 ;;; Demo
 
 (defonce ctx (atom nil))
@@ -55,8 +72,9 @@
   (print "Starting")
 ;  (print ((e/env-gen (e/adsr-best 0.3 0.4 0.8 1.3)) {:time 4 :level 10}))
 ;  (reset! ctx (play-repeated-pluck! 120))
-  (reset! ctx (out/play! (midify synth (kb/kb-midi-chan))))
+;  (reset! ctx (out/play! (midify synth (kb/kb-midi-chan))))
 ;  (reset! ctx (out/play! (simp)))
+  (run-sdef!)
   (print "Started"))
 
 (defn stop! []

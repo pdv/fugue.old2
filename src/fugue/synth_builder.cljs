@@ -2,7 +2,7 @@
   (:require [goog.object :as o]))
 
 (defn empty-synth []
-  {:source-ids ${}
+  {:source-ids #{}
    :output-id nil
    :nodes {}
    :connections {}
@@ -17,14 +17,14 @@
       synth)
     (update synth :nodes assoc modulator param)))
 
-(defn create-node [synth ctx nodedef]
-  (let [{:keys [id constructor audio-params]} nodedef
-        node (js-invoke ctx constructor)
+(defn create-node [synth ctx id nodedef]
+  (print nodedef)
+  (let [node (js-invoke ctx (:constructor nodedef))
         synth (update synth :nodes assoc id node)]
     (doseq [[name value] (:static-params nodedef)]
       (o/set node name value))
     (reduce (fn [synth [param-name modulators]]
-              (let [param (o/get node name)]
+              (let [param (o/get node param-name)]
                 (reduce (fn [synth modulator]
                           (create-modulator synth node param modulator))
                         synth
@@ -32,14 +32,33 @@
             synth
             (:audio-params nodedef))))
 
+(defn make-connections [synth]
+  (doseq [{:keys [from to param]} (:connections synth)
+          :let [nodes (:nodes synth)
+                from-node (nodes from)
+                to-node (nodes to)]]
+    (.connect from-node
+              (if param
+                (o/get to-node param)
+                to-node)))
+  synth)
+
+(defn new-synth [synthdef]
+  (-> (select-keys synthdef [:source-ids :output-id :connections])
+      (assoc :nodes {})
+      (assoc :params {})))
+
+(defn create-nodes [synth ctx nodes]
+  (reduce (fn [synth [node-id nodedef]]
+            (create-node synth ctx node-id nodedef))
+          synth
+          nodes))
+
 (defn create-synth [ctx synthdef]
-  (let [synth (-> (select-keys synthdef [:source-ids :output-id :connections])
-                  (assoc :nodes {})
-                  (assoc :params {}))]
-    (reduce (fn [synth nodedef]
-              (create-node synth ctx nodedef))
-            synth
-            (:nodes synthdef))))
+  (-> synthdef
+      new-synth
+      (create-nodes ctx (:nodes synthdef))
+      make-connections))
 
 (defn start [synth at]
   (doseq [source-node (map #((:nodes synth) %) (:source-ids synth))]
