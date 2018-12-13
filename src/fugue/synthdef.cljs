@@ -33,12 +33,10 @@
                                    :to node-id
                                    :param param-name}))
     number?
-    (-> synthdef
-        (update-in [:nodes node-id :audio-params param-name] conj modulator))
+    (update-in synthdef [:nodes node-id :audio-params param-name] conj modulator)
     ;; else
-    (-> synthdef
-        (update-in [:params modulator] conj {:node-id node-id
-                                             :param-name param-name}))))
+    (update-in synthdef [:params modulator] conj {:node-id node-id
+                                                  :param-name param-name})))
 
 (defn- add-node
   "Returns a new synthdef with nodedef added"
