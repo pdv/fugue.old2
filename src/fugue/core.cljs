@@ -51,18 +51,12 @@
 
 ;;;
 
-(defn sdef []
+(def sdef
   (synthdef/effect (synthdef/source {:constructor "createOscillator"
                                      :static-params {"type" "sawtooth"}
                                      :audio-params {"frequency" [440]}})
                    {:constructor "createGain"
                     :audio-params {"gain" [0.1]}}))
-
-(defn run-sdef! []
-  (let [ctx (js/AudioContext.)
-        synth (builder/create-synth ctx (sdef))]
-    (builder/out synth ctx)
-    (builder/start synth 0)))
 
 ;;; Demo
 
@@ -74,7 +68,7 @@
 ;  (reset! ctx (play-repeated-pluck! 120))
 ;  (reset! ctx (out/play! (midify synth (kb/kb-midi-chan))))
 ;  (reset! ctx (out/play! (simp)))
-  (run-sdef!)
+  (reset! ctx (builder/play! sdef))
   (print "Started"))
 
 (defn stop! []

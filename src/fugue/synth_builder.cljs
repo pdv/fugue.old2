@@ -12,30 +12,35 @@
       (o/set param "value" value))
     node))
 
-(defn- make-connections [synth]
-  (print "making connections" synth)
+(defn- connect! [synth]
   (doseq [{:keys [from to param]} (:connections synth)
           :let [nodes (:nodes synth)
                 from-node (nodes from)
                 to-node (nodes to)
                 dest (if param (o/get to-node param) to-node)]]
-    (.connect from-node dest))
-  synth)
+    (.connect from-node dest)))
 
 (defn update-values [m f & args]
   (reduce (fn [r [k v]] (assoc r k (apply f v args))) {} m))
 
 (defn create-synth [ctx synthdef]
-  (print "creating" synthdef)
-  (-> synthdef
-      (update :nodes update-values (partial create-node ctx))
-      make-connections))
+  (let [node-factory (partial create-node ctx)
+        synth (update synthdef :nodes update-values node-factory)]
+    (connect! synth)
+    synth))
 
-(defn start [synth at]
+(defn start! [synth at]
   (doseq [source-node (map #((:nodes synth) %) (:source-ids synth))]
     (.start source-node at)))
 
-(defn out [synth ctx]
+(defn connect-to-destination! [synth ctx]
   (let [node ((:nodes synth) (:output-id synth))
         dest (o/get ctx "destination")]
     (.connect node dest)))
+
+(defn play! [synthdef]
+  (let [ctx (js/AudioContext.)
+        synth (create-synth ctx synthdef)]
+    (connect-to-destination! synth ctx)
+    (start! synth 0)
+    ctx))

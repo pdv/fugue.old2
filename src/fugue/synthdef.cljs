@@ -23,7 +23,8 @@
 
 (defn- process-modulator
   "If a modulator is a synthdef, merge it into synthdef.
-  Otherwise, add it to the list of modulators on the nodedef."
+   If the modulator is a number, keep it on the nodedef.
+   Otherwise, add it to the :params map"
   [synthdef node-id param-name modulator]
   (condp #(%1 %2) modulator
     synthdef?
