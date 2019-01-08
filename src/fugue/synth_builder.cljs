@@ -38,9 +38,14 @@
         dest (o/get ctx "destination")]
     (.connect node dest)))
 
-(defn play! [synthdef]
-  (let [ctx (js/AudioContext.)
-        synth (create-synth ctx synthdef)]
+(defn play! [synthdef ctx]
+  (let [synth (create-synth ctx synthdef)]
     (connect-to-destination! synth ctx)
     (start! synth 0)
-    ctx))
+    synth))
+
+(defn ctrl! [synth param-lookup value]
+  (doseq [{:keys [node-id param-name]} ((:params synth) param-lookup)
+          :let [node ((:nodes synth) node-id)
+                param (o/get node param-name)]]
+    (o/set param "value" value)))
